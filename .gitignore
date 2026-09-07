@@ -1,0 +1,28 @@
+# Local datasets / exports
+*.csv
+*.tsv
+*.xlsx
+*.xls
+*.sql.gz
+*.dump
+*.bak
+
+# Local database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Credentials / local configuration
+.env
+.env.*
+!.env.example
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.log
+*.tmp

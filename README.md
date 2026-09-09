@@ -1,6 +1,12 @@
 # Hospital Patient SQL Analytics
 
+![MySQL 8.0+](https://img.shields.io/badge/MySQL-8.0%2B-4479A1)
+![SQL files: 6](https://img.shields.io/badge/queries-6%20files-blue)
+[![License: MIT](https://img.shields.io/badge/license-MIT-lightgrey)](LICENSE)
+
 A portfolio SQL project exploring synthetic hospital patient records with **MySQL**, from data-quality checks and cohort profiling to encounter utilization, return-visit analysis, procedure costs, and payer coverage.
+
+> Part of my Data portfolio: [juleescourne.github.io/portfolio-data-analyst](https://juleescourne.github.io/portfolio-data-analyst/)
 
 The project is designed to demonstrate practical analytics skills with relational healthcare data: **joins, CTEs, window functions, conditional aggregation, date logic, data-quality controls, and business-oriented KPI design**.
 
@@ -48,7 +54,10 @@ These values are dataset-specific descriptive results, not hospital performance 
 
 - Multi-table `INNER JOIN` and `LEFT JOIN`
 - Common Table Expressions (`WITH`)
-- Window functions (`LEAD`)
+- Window functions: `ROW_NUMBER`, `DENSE_RANK`, `NTILE`, `LAG`, `LEAD`,
+  running totals with `SUM() OVER`, and moving averages with an explicit
+  `ROWS BETWEEN` frame
+- Cohort retention built from first-encounter year
 - Conditional aggregation with `CASE`
 - `COUNT(DISTINCT ...)`, `SUM`, `AVG`, `MIN`, `MAX`
 - Date/time analysis with `TIMESTAMPDIFF`, `YEAR`, `MONTH`, `QUARTER`, `HOUR`
@@ -78,7 +87,8 @@ hospital-sql-analytics/
     ├── 02_patient_analytics.sql
     ├── 03_encounter_analytics.sql
     ├── 04_procedure_financial_analytics.sql
-    └── 05_data_quality_checks.sql
+    ├── 05_data_quality_checks.sql
+    └── 06_window_functions_cohorts.sql
 ```
 
 ## Analysis workflow
@@ -119,6 +129,20 @@ erDiagram
 ### 30-day return encounters
 
 The query in `03_encounter_analytics.sql` measures the time between a patient's encounter end and their **next recorded encounter**. It is intentionally described as a **30-day return-encounter proxy**, not a clinical readmission rate. A validated readmission metric would require a precise clinical definition, eligibility rules, index-admission logic, exclusions, and potentially additional fields.
+
+### Age at the end of the observation window
+
+Age is computed at the end of the encounter window for living patients and at the recorded
+date of death otherwise. Applying the window end to everyone would report a patient who
+died in 2013 with the age they would have reached in 2022.
+
+### Cohort retention
+
+The retention query in `06_window_functions_cohorts.sql` groups patients by the year of
+their first recorded encounter and measures how many appear again in later years. It
+describes *recorded activity only*: a patient missing from a later year may have moved,
+recovered, changed provider or died. It is not a measure of care continuity or of
+patient loyalty.
 
 ### Demographic analyses
 

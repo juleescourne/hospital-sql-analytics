@@ -4,6 +4,10 @@
 -- ============================================================================
 
 -- 1. Age-group distribution by sex at the end of the dataset period
+-- Age is measured at the end of the observation window for living patients, and at the
+-- recorded date of death otherwise. Using the window end for everyone would age deceased
+-- patients past the point where they could be observed: a patient who died in 2013 would
+-- be reported with their 2022 age.
 WITH dataset_end AS (
     SELECT DATE(MAX(START)) AS as_of_date
     FROM encounters
@@ -12,7 +16,11 @@ patient_ages AS (
     SELECT
         p.Id,
         p.GENDER,
-        TIMESTAMPDIFF(YEAR, p.BIRTHDATE, d.as_of_date) AS age
+        TIMESTAMPDIFF(
+            YEAR,
+            p.BIRTHDATE,
+            LEAST(COALESCE(p.DEATHDATE, d.as_of_date), d.as_of_date)
+        ) AS age
     FROM patients p
     CROSS JOIN dataset_end d
     WHERE p.BIRTHDATE IS NOT NULL

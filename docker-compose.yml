@@ -1,0 +1,39 @@
+# Base MySQL prête à l'emploi pour ce projet.
+#
+#   docker compose up -d
+#   python scripts/generate_sample_data.py
+#   docker compose exec -T mysql mysql -uroot -phospital hospital_analytics < db/schema.sql
+#
+# Le schéma est monté en lecture seule dans /docker-entrypoint-initdb.d, donc il est
+# appliqué automatiquement à la première création du volume.
+#
+# Note : ce fichier n'a pas pu être testé dans l'environnement où il a été écrit
+# (Docker indisponible). Il suit la configuration standard de l'image officielle.
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: hospital-analytics-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: hospital
+      MYSQL_DATABASE: hospital_analytics
+    ports:
+      - "3306:3306"
+    command:
+      # local_infile est requis par db/load_sample_data.sql, et desactive par defaut.
+      - --local-infile=1
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_0900_ai_ci
+    volumes:
+      - hospital-data:/var/lib/mysql
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - ./data:/data:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-phospital"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  hospital-data:

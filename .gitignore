@@ -26,3 +26,7 @@ Thumbs.db
 # Temporary files
 *.log
 *.tmp
+
+# Sortie generee par scripts/generate_sample_data.py (les CSV sont deja couverts
+# par la regle *.csv plus haut). Graine fixe : tout est reproductible.
+db/load_sample_data.sql

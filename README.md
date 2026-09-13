@@ -71,7 +71,7 @@ financiers.
 
 **Un index composite `(PATIENT, START)`** qui sert directement la fenêtre
 `LEAD(...) OVER (PARTITION BY PATIENT ORDER BY START)` de la requête de retour à
-30 jours — sans tri intermédiaire.
+30 jours — le plan effectif doit être vérifié avec EXPLAIN.
 
 ---
 

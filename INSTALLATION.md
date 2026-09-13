@@ -1,3 +1,7 @@
+> Parcours vérifié : `bash scripts/run_demo.sh` (Docker) ; exports et interprétations
+> dans [results/README.md](results/README.md). Le script recrée uniquement la base
+> dédiée `hospital_analytics`. L’index est utilisé, mais le plan montre un tri.
+
 # Installation
 
 Trois parcours, du plus rapide au plus fidèle.

@@ -2,6 +2,7 @@
 # Rebuild the dedicated synthetic demo database and export all query results.
 set -euo pipefail
 cd "$(dirname "$0")/.."
+python3 scripts/generate_sample_data.py
 if [[ "${1:-}" == "--local" ]]; then
   client=("${MYSQL_BIN:-mysql}" --local-infile=1 --batch --raw -u "${MYSQL_USER:-root}")
   if [[ -n "${MYSQL_SOCKET:-}" ]]; then
@@ -13,7 +14,6 @@ else
   docker compose up -d --wait
   client=(docker compose exec -T -w / mysql mysql --local-infile=1 --batch --raw -uroot -phospital)
 fi
-python3 scripts/generate_sample_data.py
 # This database is reserved for generated data. No external database is targeted.
 "${client[@]}" -e 'DROP DATABASE IF EXISTS hospital_analytics;'
 "${client[@]}" < db/schema.sql

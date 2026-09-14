@@ -1,0 +1,34 @@
+table_name	row_count
+patients	400
+encounters	7160
+procedures	12743
+organizations	1
+payers	10
+missing_birthdate	missing_gender	missing_race	missing_ethnicity	missing_city
+0	0	0	0	0
+missing_start	missing_stop	missing_patient_id	missing_organization_id	missing_payer_id	missing_total_claim_cost	missing_payer_coverage
+0	59	0	0	35	0	0
+missing_start	missing_patient_id	missing_encounter_id	missing_description	missing_base_cost
+0	0	0	0	0
+encounters_with_negative_duration
+2
+procedures_with_negative_duration
+0
+negative_base_encounter_cost	negative_total_claim_cost	negative_payer_coverage	coverage_above_claim_cost
+0	0	0	0
+negative_procedure_base_cost
+0
+encounters_without_patient
+0
+encounters_without_organization
+0
+encounters_without_payer
+0
+procedures_without_patient
+0
+procedures_without_encounter
+0
+procedure_encounter_patient_mismatches
+0
+earliest_encounter_start	latest_encounter_start	earliest_encounter_stop	latest_encounter_stop
+2011-01-19 15:15:52	2022-12-25 22:18:07	2011-01-19 15:54:50	2022-12-25 22:39:49

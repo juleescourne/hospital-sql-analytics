@@ -1,3 +1,7 @@
+> Parcours vérifié : `bash scripts/run_demo.sh` (Docker) ; exports et interprétations
+> dans [results/README.md](results/README.md). Le script recrée uniquement la base
+> dédiée `hospital_analytics`. L’index est utilisé, mais le plan montre un tri.
+
 # Architecture et spécifications techniques
 
 Ce document décrit le modèle relationnel, les partis pris de chaque famille de
@@ -32,8 +36,7 @@ erDiagram
 | `*_COST`, `PAYER_COVERAGE` | `DECIMAL(14,2)` | **jamais `FLOAT` pour de la monnaie** : les erreurs d'arrondi binaires faussent les totaux |
 | `START`, `STOP` | `DATETIME` | l'heure compte : les analyses par tranche horaire en dépendent |
 
-Le choix de `DECIMAL` est le plus important. Sur 7 160 passages agrégés, un `FLOAT`
-introduit des écarts visibles sur les totaux financiers.
+`DECIMAL` représente exactement les montants à deux décimales et évite les approximations binaires de `FLOAT`. Le dépôt ne mesure pas ici l’écart qu’aurait produit une autre représentation.
 
 ### Index
 
@@ -46,10 +49,7 @@ CREATE INDEX idx_procedures_encounter     ON procedures (ENCOUNTER);
 CREATE INDEX idx_procedures_start         ON procedures (START);
 ```
 
-`idx_encounters_patient_start` est **composite et ordonné**, ce qui n'est pas un
-détail : la requête de retour à 30 jours partitionne par patient et trie par date de
-début. L'index sert donc directement la fenêtre `LEAD(...) OVER (PARTITION BY
-PATIENT ORDER BY START)`, sans tri intermédiaire.
+`idx_encounters_patient_start` est composite. Dans le plan MySQL observé, un parcours d’index est suivi d’un **tri explicite** avant le calcul de la fenêtre `LEAD`. L’index ne garantit donc pas la suppression du tri. Voir le [plan exécuté](results/explain.txt) ; aucun gain de durée n’est revendiqué sans comparaison mesurée.
 
 ---
 

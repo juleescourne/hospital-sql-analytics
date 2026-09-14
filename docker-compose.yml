@@ -7,8 +7,7 @@
 # Le schéma est monté en lecture seule dans /docker-entrypoint-initdb.d, donc il est
 # appliqué automatiquement à la première création du volume.
 #
-# Note : ce fichier n'a pas pu être testé dans l'environnement où il a été écrit
-# (Docker indisponible). Il suit la configuration standard de l'image officielle.
+# Vérifié par .github/workflows/sql-demo.yml. La sonde TCP attend le serveur\n# final, pas le serveur temporaire utilisé pendant l’initialisation.
 
 services:
   mysql:
@@ -30,7 +29,7 @@ services:
       - ./db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
       - ./data:/data:ro
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-phospital"]
+      test: ["CMD", "mysql", "--protocol=TCP", "-h127.0.0.1", "-uroot", "-phospital", "-e", "SELECT 1"]
       interval: 5s
       timeout: 5s
       retries: 20

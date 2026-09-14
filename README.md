@@ -2,7 +2,7 @@
 
 ![MySQL 8.0+](https://img.shields.io/badge/MySQL-8.0%2B-4479A1)
 ![Requêtes : 6 fichiers](https://img.shields.io/badge/requêtes-6%20fichiers-blue)
-![Exécutable en 3 min](https://img.shields.io/badge/ex%C3%A9cutable-en%203%20min-brightgreen)
+[![MySQL](https://github.com/juleescourne/hospital-sql-analytics/actions/workflows/sql-demo.yml/badge.svg)](https://github.com/juleescourne/hospital-sql-analytics/actions/workflows/sql-demo.yml)
 [![Licence MIT](https://img.shields.io/badge/licence-MIT-lightgrey)](LICENSE)
 
 Étude analytique SQL sur des données hospitalières : contrôles qualité, profil des
@@ -14,29 +14,30 @@ limites méthodologiques explicitées.
 
 ---
 
-## Exécutable en trois minutes
+## Exécuter et consulter les résultats
 
-Le dataset Maven Analytics n'est pas redistribuable, ce qui rendait ce dépôt
-inexploitable sans compte externe. Il embarque désormais un générateur de données
-synthétiques de structure identique.
+[Résultats et synthèse de trois indicateurs](results/README.md)
+· [Workflow MySQL](https://github.com/juleescourne/hospital-sql-analytics/actions/workflows/sql-demo.yml)
 
 ```bash
-docker compose up -d                       # MySQL 8 + schéma appliqué
-python scripts/generate_sample_data.py     # 400 patients, 7 160 passages, 12 743 actes
-docker compose exec -T mysql mysql --local-infile=1 -uroot -phospital \
-  hospital_analytics < db/load_sample_data.sql
+git clone https://github.com/juleescourne/hospital-sql-analytics.git
+cd hospital-sql-analytics
+bash scripts/run_demo.sh
 ```
 
-Sans Docker, trois commandes équivalentes avec un MySQL local :
-[INSTALLATION.md](INSTALLATION.md).
+Prérequis : Docker Compose avec `--wait`, Python 3 et Bash. La commande génère les
+données **avant** le montage Docker, attend le serveur MySQL final, recrée la base
+`hospital_analytics`, puis exécute les six fichiers SQL. Elle exporte les résultats
+dans `results/`. Cette base est réservée à la démonstration synthétique : ne pas
+y stocker des données à conserver.
 
-Les proportions du jeu synthétique reproduisent celles du jeu réel :
+Pour un serveur MySQL existant, `bash scripts/run_demo.sh --local` utilise
+`MYSQL_BIN`, `MYSQL_HOST`, `MYSQL_PORT`, `MYSQL_USER` et, au besoin, `MYSQL_PWD` ou
+`MYSQL_SOCKET`. Ce mode recrée aussi la base de démonstration.
 
-| Classe de passage | Synthétique | Réel documenté |
-| --- | ---: | ---: |
-| ambulatory | 44,6 % | 44,9 % |
-| outpatient | 23,4 % | 22,6 % |
-| urgentcare | 13,0 % | 13,1 % |
+Le dataset Maven Analytics n'est pas redistribué. Le générateur fournit 400 patients,
+7 160 passages et 12 743 actes, avec anomalies intentionnelles documentées dans
+la synthèse. Le temps de téléchargement de l'image Docker dépend de la connexion.
 
 ---
 
@@ -71,7 +72,7 @@ financiers.
 
 **Un index composite `(PATIENT, START)`** qui sert directement la fenêtre
 `LEAD(...) OVER (PARTITION BY PATIENT ORDER BY START)` de la requête de retour à
-30 jours — sans tri intermédiaire.
+30 jours — le plan effectif doit être vérifié avec EXPLAIN.
 
 ---
 
@@ -149,12 +150,10 @@ clinique.
 
 ## Limites assumées
 
-- **Aucun dossier `results/` n'est publié** : le produire demande un serveur MySQL,
-  dont je ne disposais pas en rédigeant. La commande est dans
-  [UTILISATION.md](UTILISATION.md#produire-un-dossier-de-résultats).
-- **Le `docker-compose.yml` n'a pas été testé**, faute de Docker dans
-  l'environnement de développement.
-- Pas de vues ni d'agrégats matérialisés, pas de plan d'exécution commenté.
+- Données synthétiques : aucune interprétation clinique réelle.
+- Pas de vues ni d'agrégats matérialisés ; les résultats sont des exports statiques.
+- Le proxy de retour à 30 jours n'est pas un taux clinique validé.
+- Le plan d'exécution est publié ; aucune accélération n'est annoncée sans mesure.
 
 ---
 

@@ -1,0 +1,4 @@
+EXPLAIN
+-> Window aggregate with buffering: lead(encounters.`START`) OVER (PARTITION BY encounters.PATIENT ORDER BY encounters.`START`,encounters.Id ) 
+    -> Sort: encounters.PATIENT, encounters.`START`, encounters.Id  (cost=716 rows=7160)
+        -> Index scan on encounters using idx_encounters_patient_start  (cost=716 rows=7160)

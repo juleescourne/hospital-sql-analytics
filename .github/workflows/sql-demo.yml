@@ -1,0 +1,28 @@
+name: MySQL synthetic analysis
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  sql:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Execute the documented Docker workflow
+        run: bash scripts/run_demo.sh
+      - name: Print reproducible synthetic results
+        run: |
+          python - <<'PYCODE'
+          import json
+          from pathlib import Path
+          print('RESULT_JSON ' + json.dumps({p.name: p.read_text() for p in Path('results').iterdir() if p.is_file()}))
+          PYCODE
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mysql-results
+          path: results/
+      - name: Stop the demo database
+        if: always()
+        run: docker compose down -v

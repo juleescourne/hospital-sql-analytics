@@ -4,20 +4,25 @@ permissions:
   contents: read
 jobs:
   sql:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    env:
+      MYSQL_HOST: 127.0.0.1
+      MYSQL_USER: root
+      MYSQL_PWD: root
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Execute the documented Docker workflow
-        run: bash scripts/run_demo.sh
+      - name: Start the runner's MySQL 8 service
+        run: |
+          sudo systemctl start mysql.service
+          mysql -h127.0.0.1 -uroot -e 'SET GLOBAL local_infile = ON;'
+      - name: Execute the documented local MySQL workflow
+        run: bash scripts/run_demo.sh --local
       - name: Compare published aggregates with recalculated results
         run: git diff --exit-code -- results/portfolio.json results/activity.csv results/coverage.csv results/quality.csv results/overview.csv
       - uses: actions/upload-artifact@v4
         with:
           name: mysql-results
           path: results/
-      - name: Stop the demo database
-        if: always()
-        run: docker compose down -v

@@ -1,4 +1,4 @@
-> Parcours vérifié : `bash scripts/run_demo.sh` (Docker) ; exports et interprétations
+> Parcours vérifié : `bash scripts/run_demo.sh --local` (MySQL 8) ; exports et interprétations
 > dans [results/README.md](results/README.md). Le script recrée uniquement la base
 > dédiée `hospital_analytics`. L’index est utilisé, mais le plan montre un tri.
 
@@ -165,7 +165,7 @@ Les parcours commencent après la naissance et restent dans la fenêtre 2011–2
 
 ## 6. Vérification et limites
 
-Les résultats MySQL sont publiés dans `results/`. Quatre tests Python vérifient le générateur ; sept groupes de tests SQL vérifient les calculs avec des résultats attendus. Le parcours Docker est exécuté dans GitHub Actions. Les requêtes de cette évolution ont aussi été exécutées sur MySQL 8.0.46 dans un environnement temporaire isolé.
+Les résultats MySQL sont publiés dans `results/`. Quatre tests Python vérifient le générateur ; sept groupes de tests SQL vérifient les calculs avec des résultats attendus. Le parcours MySQL local est exécuté dans GitHub Actions sur le serveur MySQL 8 du runner Ubuntu. Les requêtes de cette évolution ont aussi été exécutées sur MySQL 8.0.46 dans un environnement temporaire isolé.
 
 Le plan `results/explain.txt` est produit après mise à jour des statistiques de table. Il décrit un parcours d’index puis un tri ; aucun gain de performance n’est mesuré. Les tables restent petites et le projet n’a pas vocation à démontrer une architecture de production.
 

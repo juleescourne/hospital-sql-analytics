@@ -38,7 +38,7 @@ bash scripts/run_demo.sh
 
 Cette commande recrée la base **réservée à la démonstration** `hospital_analytics`, génère et charge les données, exécute les tests puis les sept fichiers SQL. Ne pas utiliser cette base pour conserver d’autres données. Les tests SQL utilisent une transaction annulée et n’altèrent pas les résultats de démonstration.
 
-Pour un serveur MySQL 8 existant : `bash scripts/run_demo.sh --local`. Les variables de connexion sont décrites dans [INSTALLATION.md](INSTALLATION.md). GitHub Actions exécute le parcours Docker : [workflow](.github/workflows/sql-demo.yml).
+Pour un serveur MySQL 8 existant : `bash scripts/run_demo.sh --local`. Les variables de connexion sont décrites dans [INSTALLATION.md](INSTALLATION.md). GitHub Actions exécute le mode local sur le serveur MySQL 8 du runner Ubuntu : [workflow](.github/workflows/sql-demo.yml).
 
 Pour vérifier seulement le générateur, sans base ni dépendance Python supplémentaire :
 

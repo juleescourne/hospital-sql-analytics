@@ -12,7 +12,7 @@ bash scripts/run_demo.sh
 
 Le script génère les CSV **avant** le montage Docker, attend le serveur final et recrée `hospital_analytics`. Cette base est réservée à la démonstration. Le mot de passe du conteneur est une valeur locale de démonstration.
 
-Ordre : tests Python → génération → chargement → tests SQL avec rollback → sept fichiers SQL → exports métier. Les données agrégées sont écrites dans `results/`. Le workflow GitHub utilise cette même commande.
+Ordre : tests Python → génération → chargement → tests SQL avec rollback → sept fichiers SQL → exports métier. Les données agrégées sont écrites dans `results/`. Le workflow GitHub exécute le même pipeline avec `--local` sur le serveur MySQL 8 du runner Ubuntu. Il ne dépend pas du téléchargement d’une image Docker.
 
 ```bash
 docker compose down      # arrêter, conserver le volume

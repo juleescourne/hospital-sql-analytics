@@ -26,36 +26,32 @@ SELECT
     ROUND(SUM(encounter_count > 1) * 100.0 / COUNT(*), 2) AS multiple_encounter_share_pct
 FROM patient_counts;
 
--- 3. 30-day return-encounter proxy using the next recorded encounter
--- Not a validated clinical readmission metric.
+-- 3. Next recorded encounter within exactly 30 * 24 hours after discharge.
+-- Compute LEAD before excluding unusable index encounters: a missing next STOP
+-- must not hide the next START. Not a clinical readmission rate.
 WITH ordered_encounters AS (
-    SELECT
-        PATIENT,
-        START,
-        STOP,
-        LEAD(START) OVER (PARTITION BY PATIENT ORDER BY START, Id) AS next_start
+    SELECT PATIENT, START, STOP,
+           LEAD(START) OVER (PARTITION BY PATIENT ORDER BY START, Id) AS next_start
     FROM encounters
-    WHERE STOP IS NOT NULL
 ),
 return_intervals AS (
-    SELECT
-        PATIENT,
-        TIMESTAMPDIFF(DAY, STOP, next_start) AS gap_days
+    SELECT PATIENT,
+           TIMESTAMPDIFF(SECOND, STOP, next_start) / 86400.0 AS gap_days
     FROM ordered_encounters
-    WHERE next_start IS NOT NULL
+    WHERE STOP IS NOT NULL AND STOP >= START
+      AND next_start >= STOP
+      AND next_start <= DATE_ADD(STOP, INTERVAL 30 DAY)
 )
-SELECT
-    COUNT(*) AS return_encounters_within_30_days,
-    COUNT(DISTINCT PATIENT) AS patients_with_return_within_30_days,
-    ROUND(AVG(gap_days), 1) AS average_gap_days
-FROM return_intervals
-WHERE gap_days BETWEEN 0 AND 30;
+SELECT COUNT(*) AS return_encounters_within_30_days,
+       COUNT(DISTINCT PATIENT) AS patients_with_return_within_30_days,
+       ROUND(AVG(gap_days), 1) AS average_gap_days
+FROM return_intervals;
 
 -- 4. Encounter duration by class
 SELECT
     ENCOUNTERCLASS AS encounter_class,
     COUNT(*) AS encounter_count,
-    ROUND(AVG(TIMESTAMPDIFF(MINUTE, START, STOP)) / 60.0, 2) AS average_hours,
+    ROUND(AVG(TIMESTAMPDIFF(SECOND, START, STOP)) / 3600.0, 2) AS average_hours,
     MIN(TIMESTAMPDIFF(MINUTE, START, STOP)) AS minimum_minutes,
     MAX(TIMESTAMPDIFF(MINUTE, START, STOP)) AS maximum_minutes
 FROM encounters
@@ -66,7 +62,7 @@ ORDER BY average_hours DESC;
 
 -- 5. Encounter-duration distribution
 WITH valid_durations AS (
-    SELECT TIMESTAMPDIFF(MINUTE, START, STOP) AS duration_minutes
+    SELECT TIMESTAMPDIFF(SECOND, START, STOP) / 60.0 AS duration_minutes
     FROM encounters
     WHERE STOP IS NOT NULL
       AND STOP >= START
@@ -97,10 +93,9 @@ SELECT
     END AS encounter_group,
     COUNT(*) AS encounter_count,
     ROUND(AVG(TOTAL_CLAIM_COST), 2) AS average_claim_cost,
-    ROUND(AVG(TIMESTAMPDIFF(MINUTE, START, STOP)) / 60.0, 2) AS average_duration_hours
+    SUM(STOP IS NOT NULL AND STOP >= START) AS valid_duration_count,
+    ROUND(AVG(CASE WHEN STOP >= START THEN TIMESTAMPDIFF(SECOND, START, STOP) END) / 3600.0, 2) AS average_duration_hours
 FROM encounters
-WHERE STOP IS NOT NULL
-  AND STOP >= START
 GROUP BY encounter_group
 ORDER BY encounter_count DESC;
 

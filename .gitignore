@@ -35,3 +35,8 @@ db/load_sample_data.sql
 !results/*.tsv
 __pycache__/
 *.pyc
+
+!results/activity.csv
+!results/coverage.csv
+!results/quality.csv
+!results/overview.csv

@@ -40,7 +40,7 @@ WITH dataset_end AS (
 patient_ages AS (
     SELECT
         p.Id,
-        TIMESTAMPDIFF(YEAR, p.BIRTHDATE, d.as_of_date) AS age
+        TIMESTAMPDIFF(YEAR, p.BIRTHDATE, LEAST(COALESCE(p.DEATHDATE, d.as_of_date), d.as_of_date)) AS age
     FROM patients p
     CROSS JOIN dataset_end d
     WHERE p.BIRTHDATE IS NOT NULL
@@ -102,7 +102,7 @@ SELECT
     (SELECT COUNT(*) FROM encounters) AS total_encounters,
     (SELECT COUNT(*) FROM procedures) AS total_procedures,
     (
-        SELECT ROUND(AVG(TIMESTAMPDIFF(YEAR, p.BIRTHDATE, d.as_of_date)), 1)
+        SELECT ROUND(AVG(TIMESTAMPDIFF(YEAR, p.BIRTHDATE, LEAST(COALESCE(p.DEATHDATE, d.as_of_date), d.as_of_date))), 1)
         FROM patients p
         CROSS JOIN dataset_end d
         WHERE p.BIRTHDATE IS NOT NULL

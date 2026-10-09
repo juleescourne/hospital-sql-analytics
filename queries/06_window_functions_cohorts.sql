@@ -23,7 +23,7 @@ ranked AS (
         procedure_costs.*,
         ROW_NUMBER() OVER (
             PARTITION BY encounter_class
-            ORDER BY total_base_cost DESC
+            ORDER BY total_base_cost DESC, procedure_description
         ) AS cost_rank
     FROM procedure_costs
 )
@@ -59,40 +59,38 @@ GROUP BY p.Id, p.NAME
 ORDER BY claim_rank;
 
 
--- 3. Monthly activity: running total, month-over-month change, 3-month moving average
--- SUM() OVER (ORDER BY ... ) with the default frame gives the cumulative total.
--- LAG compares each month with the previous one.
-WITH monthly AS (
-    SELECT
-        DATE_FORMAT(START, '%Y-%m-01')      AS month_start,
-        COUNT(*)                            AS encounter_count,
-        ROUND(SUM(TOTAL_CLAIM_COST), 2)     AS monthly_claim_cost
+-- 3. Monthly activity, including zero-activity months within the observed window.
+-- A row-based moving average needs a calendar so that three rows mean three months.
+WITH RECURSIVE calendar AS (
+    SELECT CAST(DATE_FORMAT(MIN(START), '%Y-%m-01') AS DATE) AS month_start,
+           CAST(DATE_FORMAT(MAX(START), '%Y-%m-01') AS DATE) AS last_month
     FROM encounters
-    GROUP BY DATE_FORMAT(START, '%Y-%m-01')
+    HAVING COUNT(*) > 0
+    UNION ALL
+    SELECT DATE_ADD(month_start, INTERVAL 1 MONTH), last_month
+    FROM calendar
+    WHERE month_start < last_month
+),
+counts AS (
+    SELECT CAST(DATE_FORMAT(START, '%Y-%m-01') AS DATE) AS month_start,
+           COUNT(*) AS encounter_count, SUM(TOTAL_CLAIM_COST) AS monthly_claim_cost
+    FROM encounters
+    GROUP BY CAST(DATE_FORMAT(START, '%Y-%m-01') AS DATE)
+),
+monthly AS (
+    SELECT c.month_start, COALESCE(n.encounter_count, 0) AS encounter_count,
+           COALESCE(n.monthly_claim_cost, 0) AS monthly_claim_cost
+    FROM calendar c LEFT JOIN counts n ON n.month_start = c.month_start
 )
-SELECT
-    month_start,
-    encounter_count,
-    monthly_claim_cost,
-    SUM(monthly_claim_cost) OVER (
-        ORDER BY month_start
-    )                                                   AS cumulative_claim_cost,
-    LAG(encounter_count) OVER (
-        ORDER BY month_start
-    )                                                   AS previous_month_encounters,
-    encounter_count - LAG(encounter_count) OVER (
-        ORDER BY month_start
-    )                                                   AS encounter_change,
-    ROUND(
-        AVG(encounter_count) OVER (
-            ORDER BY month_start
-            ROWS BETWEEN 2 PRECEDING AND CURRENT ROW
-        ),
-        1
-    )                                                   AS moving_avg_3_months
+SELECT month_start, encounter_count, monthly_claim_cost,
+       SUM(monthly_claim_cost) OVER (ORDER BY month_start) AS cumulative_claim_cost,
+       LAG(encounter_count) OVER (ORDER BY month_start) AS previous_month_encounters,
+       encounter_count - LAG(encounter_count) OVER (ORDER BY month_start) AS encounter_change,
+       ROUND(AVG(encounter_count) OVER (
+           ORDER BY month_start ROWS BETWEEN 2 PRECEDING AND CURRENT ROW
+       ), 1) AS moving_avg_3_months
 FROM monthly
 ORDER BY month_start;
-
 
 -- 4. Patient spend quartiles
 -- NTILE(4) splits patients into four equal-sized groups ordered by total claim cost.
@@ -108,7 +106,7 @@ WITH patient_spend AS (
 quartiles AS (
     SELECT
         patient_spend.*,
-        NTILE(4) OVER (ORDER BY total_claim_cost) AS spend_quartile
+        NTILE(4) OVER (ORDER BY total_claim_cost, patient_id) AS spend_quartile
     FROM patient_spend
 )
 SELECT
@@ -133,7 +131,11 @@ ORDER BY spend_quartile;
 -- how many are still active N years later. This is descriptive retention on recorded
 -- activity only: a patient absent from the data may have moved, recovered or died, so
 -- this is not a measure of care continuity.
-WITH first_encounter AS (
+WITH year_offsets AS (
+    SELECT 0 AS years_since_first UNION ALL SELECT 1 UNION ALL SELECT 2
+    UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5
+),
+first_encounter AS (
     SELECT
         PATIENT             AS patient_id,
         MIN(YEAR(START))    AS cohort_year
@@ -160,57 +162,39 @@ cohort_size AS (
     FROM first_encounter
     GROUP BY cohort_year
 )
-SELECT
-    c.cohort_year,
-    s.cohort_patients,
-    c.years_since_first,
-    c.active_patients,
-    ROUND(c.active_patients * 100.0 / NULLIF(s.cohort_patients, 0), 1) AS retention_pct
-FROM cohort_activity c
-JOIN cohort_size s ON s.cohort_year = c.cohort_year
-WHERE c.years_since_first BETWEEN 0 AND 5
-ORDER BY c.cohort_year, c.years_since_first;
+SELECT s.cohort_year, s.cohort_patients, y.years_since_first,
+       COALESCE(c.active_patients, 0) AS active_patients,
+       ROUND(COALESCE(c.active_patients, 0) * 100.0 / s.cohort_patients, 1) AS retention_pct
+FROM cohort_size s
+CROSS JOIN year_offsets y
+LEFT JOIN cohort_activity c ON c.cohort_year = s.cohort_year
+    AND c.years_since_first = y.years_since_first
+WHERE s.cohort_year + y.years_since_first <= (SELECT MAX(YEAR(START)) FROM encounters)
+ORDER BY s.cohort_year, y.years_since_first;
 
-
--- 6. Gap between consecutive encounters, per patient
--- LAG on the previous STOP gives each patient's inter-encounter gap. PERCENT_RANK
--- positions each gap within the overall distribution, which is more informative than
--- an average when the distribution is heavily skewed.
+-- 6. Gap from the immediately preceding encounter, measured in complete seconds.
+-- Keep missing STOP rows in the sequence; do not jump over an unknown interval.
 WITH ordered_encounters AS (
-    SELECT
-        PATIENT,
-        Id                                          AS encounter_id,
-        START,
-        LAG(STOP) OVER (
-            PARTITION BY PATIENT
-            ORDER BY START, Id
-        )                                           AS previous_stop
+    SELECT PATIENT, Id AS encounter_id, START,
+           LAG(START) OVER (PARTITION BY PATIENT ORDER BY START, Id) AS previous_start,
+           LAG(STOP) OVER (PARTITION BY PATIENT ORDER BY START, Id) AS previous_stop
     FROM encounters
-    WHERE STOP IS NOT NULL
 ),
 gaps AS (
-    SELECT
-        PATIENT,
-        encounter_id,
-        TIMESTAMPDIFF(DAY, previous_stop, START) AS gap_days
+    SELECT TIMESTAMPDIFF(SECOND, previous_stop, START) / 86400.0 AS gap_days
     FROM ordered_encounters
-    WHERE previous_stop IS NOT NULL
+    WHERE previous_stop >= previous_start AND START >= previous_stop
 )
-SELECT
-    CASE
-        WHEN gap_days <= 7   THEN '0-7 days'
-        WHEN gap_days <= 30  THEN '8-30 days'
-        WHEN gap_days <= 90  THEN '31-90 days'
-        WHEN gap_days <= 365 THEN '91-365 days'
-        ELSE '> 365 days'
-    END                                     AS gap_bucket,
-    COUNT(*)                                AS encounter_count,
-    ROUND(AVG(gap_days), 1)                 AS average_gap_days,
-    ROUND(
-        COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (),
-        2
-    )                                       AS share_pct
+SELECT CASE
+           WHEN gap_days <= 7 THEN '0-7 days'
+           WHEN gap_days <= 30 THEN '>7-30 days'
+           WHEN gap_days <= 90 THEN '>30-90 days'
+           WHEN gap_days <= 365 THEN '>90-365 days'
+           ELSE '>365 days'
+       END AS gap_bucket,
+       COUNT(*) AS encounter_count,
+       ROUND(AVG(gap_days), 1) AS average_gap_days,
+       ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (), 2) AS share_pct
 FROM gaps
-WHERE gap_days >= 0
 GROUP BY gap_bucket
 ORDER BY MIN(gap_days);

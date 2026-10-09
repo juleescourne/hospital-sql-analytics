@@ -1,159 +1,53 @@
-> Parcours vérifié : `bash scripts/run_demo.sh` (Docker) ; exports et interprétations
-> dans [results/README.md](results/README.md). Le script recrée uniquement la base
-> dédiée `hospital_analytics`. L’index est utilisé, mais le plan montre un tri.
+# Installation et reproduction
 
-# Installation
+## Parcours Docker
 
-Trois parcours, du plus rapide au plus fidèle.
-
-| Parcours | Temps | Prérequis |
-| --- | --- | --- |
-| **Docker** — tout automatique | 3 min | Docker |
-| **MySQL local** — vous avez déjà un serveur | 5 min | MySQL 8.0+ |
-| **Jeu de données réel** — fidèle à l'analyse d'origine | 15 min | MySQL + compte Maven Analytics |
-
-Les deux premiers utilisent un jeu synthétique généré localement, de structure
-identique au jeu réel.
-
----
-
-## Parcours 1 — Docker
+Prérequis : Docker Compose avec `--wait`, Python 3.10+ et Bash.
 
 ```bash
 git clone https://github.com/juleescourne/hospital-sql-analytics.git
 cd hospital-sql-analytics
-
-docker compose up -d                       # MySQL 8 + schéma appliqué automatiquement
-python scripts/generate_sample_data.py     # 5 CSV + script de chargement
-docker compose exec -T mysql mysql --local-infile=1 -uroot -phospital hospital_analytics < db/load_sample_data.sql
+bash scripts/run_demo.sh
 ```
 
-Puis lancez les requêtes :
+Le script génère les CSV **avant** le montage Docker, attend le serveur final et recrée `hospital_analytics`. Cette base est réservée à la démonstration. Le mot de passe du conteneur est une valeur locale de démonstration.
+
+Ordre : tests Python → génération → chargement → tests SQL avec rollback → sept fichiers SQL → exports métier. Les données agrégées sont écrites dans `results/`. Le workflow GitHub utilise cette même commande.
 
 ```bash
-docker compose exec -T mysql mysql -uroot -phospital hospital_analytics < queries/05_data_quality_checks.sql
+docker compose down      # arrêter, conserver le volume
 ```
 
-Pour tout arrêter :
+## Parcours MySQL 8 local
+
+Le client et le serveur doivent autoriser `local_infile`. Le script utilise `MYSQL_BIN` (défaut `mysql`), `MYSQL_USER` (défaut `root`), `MYSQL_HOST` (défaut `127.0.0.1`), `MYSQL_PORT` (défaut `3306`) et, si fourni, `MYSQL_SOCKET`. Le mot de passe peut être fourni via `MYSQL_PWD` dans l’environnement local ; ne pas le versionner.
 
 ```bash
-docker compose down          # conserve les données
-docker compose down -v       # supprime aussi le volume
+bash scripts/run_demo.sh --local
 ```
 
-> Ce `docker-compose.yml` suit la configuration standard de l'image officielle MySQL
-> mais **n'a pas pu être testé** : Docker n'était pas disponible dans
-> l'environnement où il a été écrit. Signalez-moi tout écart.
+Ce mode recrée également la base dédiée `hospital_analytics`. Les autres bases ne sont pas ciblées.
 
----
-
-## Parcours 2 — MySQL local
-
-### Prérequis
-
-| Outil | Version | Vérifier |
-| --- | --- | --- |
-| MySQL | 8.0 ou supérieur | `mysql --version` |
-| Python | 3.10 ou supérieur | `python --version` |
-
-MySQL 8.0 est requis : les fonctions fenêtres (`LEAD`, `ROW_NUMBER`, `NTILE`)
-n'existent pas avant.
-
-### 1. Créer le schéma
+## Générateur seul
 
 ```bash
-mysql -u root -p < db/schema.sql
+python3 -m unittest discover -s tests -v
+python3 scripts/generate_sample_data.py
 ```
 
-Crée la base `hospital_analytics`, ses 5 tables, ses clés étrangères et ses 6 index.
+Par défaut : graine 42, 400 patients, 7 794 passages, 13 839 actes. Les options `--patients` et `--seed` permettent d’explorer d’autres jeux ; les chiffres publiés correspondent uniquement aux valeurs par défaut. Le lanceur complet utilise ces valeurs pour reproduire la synthèse.
 
-### 2. Générer le jeu synthétique
+Les anomalies intentionnelles sont : 64 dates de fin absentes, 2 durées négatives, 3 durées nulles et 38 payeurs manquants. Les passages avant naissance et après décès doivent être absents. Une durée nulle est signalée et conservée.
 
-```bash
-python scripts/generate_sample_data.py
-```
+## Adapter à des fichiers externes
 
-Écrit cinq CSV dans `data/` — 400 patients, 7 160 passages, 12 743 actes — ainsi
-que `db/load_sample_data.sql`, prêt à l'emploi.
+Le jeu Hospital Patient Records de Maven Analytics n’est pas fourni. `db/load_data.example.sql` sert de point de départ à adapter aux fichiers et à leurs règles. Charger dans l’ordre : organizations, payers, patients, encounters, procedures. Contrôler les fichiers avant import : les contraintes en base ne prouvent pas qu’aucune ligne n’a été rejetée ou convertie au chargement.
 
-Options :
+Les sorties de cette version sont celles du jeu synthétique, pas une validation du jeu externe.
 
-```bash
-python scripts/generate_sample_data.py --patients 1000 --seed 7
-```
+## Dépannage
 
-### 3. Charger
-
-```bash
-mysql --local-infile=1 -u root -p hospital_analytics < db/load_sample_data.sql
-```
-
-L'option `--local-infile=1` est indispensable : `LOAD DATA LOCAL INFILE` est
-désactivé par défaut, côté client comme côté serveur. Si le serveur la refuse :
-
-```sql
-SET GLOBAL local_infile = 1;
-```
-
-Le script affiche les volumes chargés en fin d'exécution.
-
----
-
-## Parcours 3 — jeu de données réel
-
-Le dataset **Hospital Patient Records** de Maven Analytics n'est pas redistribué
-ici (licence).
-
-1. Téléchargez-le sur <https://mavenanalytics.io/data-playground/hospital-patient-records>
-2. Créez le schéma : `mysql -u root -p < db/schema.sql`
-3. Importez les cinq CSV **dans cet ordre**, les clés étrangères l'imposent :
-
-   ```text
-   organizations.csv → payers.csv → patients.csv → encounters.csv → procedures.csv
-   ```
-
-   Via l'assistant d'import de MySQL Workbench, ou en adaptant
-   `db/load_data.example.sql` avec vos chemins.
-
-4. Contrôlez les volumes attendus :
-
-   | Table | Lignes |
-   | --- | ---: |
-   | `patients` | 974 |
-   | `encounters` | 27 891 |
-   | `procedures` | 47 701 |
-   | `payers` | 10 |
-   | `organizations` | 1 |
-
----
-
-## Vérifier l'installation
-
-```bash
-mysql -u root -p hospital_analytics < queries/05_data_quality_checks.sql
-```
-
-Sur le jeu synthétique, les contrôles doivent remonter les anomalies **injectées
-volontairement** : 59 passages sans date de fin, 2 dates de fin antérieures au
-début, 35 passages sans payeur. Un jeu parfaitement propre ne démontrerait rien.
-
----
-
-## Problèmes courants
-
-**`ERROR 1148: The used command is not allowed with this MySQL version`**
-`local_infile` est désactivé. Relancez le client avec `--local-infile=1` et exécutez
-`SET GLOBAL local_infile = 1;` côté serveur.
-
-**`ERROR 1064` sur une fonction fenêtre**
-Votre serveur est en MySQL 5.7 ou antérieur. `LEAD`, `ROW_NUMBER` et `NTILE`
-exigent MySQL 8.0.
-
-**`ERROR 1452: Cannot add or update a child row`**
-Les fichiers ont été importés dans le mauvais ordre. Respectez l'ordre des
-dépendances ci-dessus.
-
-**`Incorrect date value: ''`**
-Le serveur est en mode strict et une date vide a été insérée telle quelle.
-`db/load_sample_data.sql` gère ce cas avec `NULLIF(@col, '')` — utilisez-le plutôt
-qu'un import manuel.
+- `local_infile` refusé : activer l’option sur le serveur et le client ; le conteneur fourni la configure.
+- Fonction fenêtre non reconnue : utiliser MySQL 8.0 ou supérieur.
+- Port 3306 occupé : adapter le port publié dans `docker-compose.yml` ou utiliser le mode local.
+- Date vide : le chargeur généré utilise `NULLIF` pour convertir les champs prévus en `NULL`.

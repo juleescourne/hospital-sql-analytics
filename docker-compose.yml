@@ -1,13 +1,5 @@
-# Base MySQL prête à l'emploi pour ce projet.
-#
-#   docker compose up -d
-#   python scripts/generate_sample_data.py
-#   docker compose exec -T mysql mysql -uroot -phospital hospital_analytics < db/schema.sql
-#
-# Le schéma est monté en lecture seule dans /docker-entrypoint-initdb.d, donc il est
-# appliqué automatiquement à la première création du volume.
-#
-# Vérifié par .github/workflows/sql-demo.yml. La sonde TCP attend le serveur\n# final, pas le serveur temporaire utilisé pendant l’initialisation.
+# Base locale de démonstration. Lancer : bash scripts/run_demo.sh
+# Le script génère les fichiers avant le montage et attend le serveur final.
 
 services:
   mysql:

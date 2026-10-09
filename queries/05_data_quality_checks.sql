@@ -130,3 +130,11 @@ SELECT
     MIN(STOP) AS earliest_encounter_stop,
     MAX(STOP) AS latest_encounter_stop
 FROM encounters;
+
+-- 13. Encounter dates versus the patient's lifetime (date precision for birth/death).
+SELECT
+    SUM(DATE(e.START) < p.BIRTHDATE) AS encounters_before_birth,
+    SUM(p.DEATHDATE IS NOT NULL AND DATE(e.START) > p.DEATHDATE) AS encounters_after_death,
+    SUM(p.DEATHDATE IS NOT NULL AND DATE(e.STOP) > p.DEATHDATE) AS encounter_ends_after_death
+FROM encounters e
+JOIN patients p ON p.Id = e.PATIENT;

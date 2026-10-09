@@ -23,8 +23,8 @@ erDiagram
 | Table | Grain | Volume (jeu synthétique) |
 | --- | --- | ---: |
 | `patients` | un patient | 400 |
-| `encounters` | un passage | 7 160 |
-| `procedures` | un acte réalisé pendant un passage | 12 743 |
+| `encounters` | un passage | 7 794 |
+| `procedures` | un acte réalisé pendant un passage | 13 839 |
 | `payers` | un organisme payeur | 10 |
 | `organizations` | un établissement | 1 |
 
@@ -32,8 +32,8 @@ erDiagram
 
 | Colonne | Type | Pourquoi |
 | --- | --- | --- |
-| `Id` | `CHAR(36)` | UUID de longueur fixe — plus compact et plus rapide qu'un `VARCHAR` |
-| `*_COST`, `PAYER_COVERAGE` | `DECIMAL(14,2)` | **jamais `FLOAT` pour de la monnaie** : les erreurs d'arrondi binaires faussent les totaux |
+| `Id` | `CHAR(36)` | Longueur fixe adaptée au format UUID |
+| `*_COST`, `PAYER_COVERAGE` | `DECIMAL(14,2)` | Représentation exacte des montants à deux décimales |
 | `START`, `STOP` | `DATETIME` | l'heure compte : les analyses par tranche horaire en dépendent |
 
 `DECIMAL` représente exactement les montants à deux décimales et évite les approximations binaires de `FLOAT`. Le dépôt ne mesure pas ici l’écart qu’aurait produit une autre représentation.
@@ -55,7 +55,7 @@ CREATE INDEX idx_procedures_start         ON procedures (START);
 
 ## 2. Organisation des requêtes
 
-Les fichiers sont numérotés dans l'ordre où il faut les exécuter.
+Le fichier 05 est exécuté en premier, malgré la numérotation.
 
 | Fichier | Objet |
 | --- | --- |
@@ -159,46 +159,16 @@ synthétique, mais la pratique reste la bonne.
 
 ## 5. Jeu de données synthétique
 
-Le dataset Maven Analytics n'est pas redistribué. `scripts/generate_sample_data.py`
-produit un jeu de structure identique, **statistiquement cohérent** :
+Le générateur utilise une graine fixe et des règles pédagogiques : coûts par classe, couverture par payeur, distribution asymétrique du nombre de passages. Il n’est pas calibré pour représenter une population réelle.
 
-- répartition des classes de passage calée sur les proportions documentées ;
-- nombre de passages par patient suivant une loi log-normale — quelques patients
-  concentrent une grande part de l'activité, comme en réalité ;
-- coûts dépendant de la classe de passage ;
-- couverture dépendant du payeur, `NO_INSURANCE` couvrant zéro ;
-- parcours patient chronologiquement cohérent, borné par la date de décès.
+Les parcours commencent après la naissance et restent dans la fenêtre 2011–2022 ainsi que dans la vie du patient. Les défauts intentionnels sont ajoutés ensuite : 64 fins absentes, 2 durées négatives, 3 durées nulles et 38 payeurs absents pour la graine 42. Les coûts restent valides dans ce jeu.
 
-Proportions obtenues, comparées au jeu réel :
+## 6. Vérification et limites
 
-| Classe | Jeu synthétique | Jeu réel documenté |
-| --- | ---: | ---: |
-| ambulatory | 44,6 % | 44,9 % |
-| outpatient | 23,4 % | 22,6 % |
-| urgentcare | 13,0 % | 13,1 % |
+Les résultats MySQL sont publiés dans `results/`. Quatre tests Python vérifient le générateur ; sept groupes de tests SQL vérifient les calculs avec des résultats attendus. Le parcours Docker est exécuté dans GitHub Actions. Les requêtes de cette évolution ont aussi été exécutées sur MySQL 8.0.46 dans un environnement temporaire isolé.
 
-### Défauts injectés volontairement
+Le plan `results/explain.txt` est produit après mise à jour des statistiques de table. Il décrit un parcours d’index puis un tri ; aucun gain de performance n’est mesuré. Les tables restent petites et le projet n’a pas vocation à démontrer une architecture de production.
 
-Sans anomalies, `05_data_quality_checks.sql` ne détecterait rien et ne
-démontrerait rien :
+`07_portfolio_summary.sql` produit la médiane à partir des rangs des durées valides : moyenne des deux rangs centraux pour un effectif pair, valeur centrale pour un effectif impair. Les volumes et montants portent sur tous les passages ; les durées ont leur propre effectif.
 
-| Défaut | Occurrences |
-| --- | ---: |
-| Passages sans date de fin | 59 |
-| Date de fin antérieure au début | 2 |
-| Passages sans payeur | 35 |
-
----
-
-## 6. Limites connues
-
-- **Aucun résultat n'est publié dans le dépôt.** Produire un dossier `results/`
-  demande un serveur MySQL, dont je ne disposais pas au moment de la rédaction.
-  La commande est documentée dans [UTILISATION.md](UTILISATION.md).
-- **Le `docker-compose.yml` n'a pas été testé** faute de Docker dans
-  l'environnement de développement. Il suit la configuration standard de l'image
-  officielle MySQL 8.
-- **Pas de vues ni de tables d'agrégat** : chaque requête repart des tables brutes.
-  Sur un volume réel, des agrégats matérialisés seraient justifiés.
-- **Pas de plan d'exécution commenté.** Deux ou trois `EXPLAIN` annotés
-  montreraient l'usage réel des index.
+Le calendrier mensuel inclut les zéros dans la fenêtre observée. Les cohortes n’ajoutent pas les années futures. Ces règles ne corrigent pas une couverture temporelle incomplète des patients.

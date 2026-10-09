@@ -106,7 +106,7 @@ WITH dataset_end AS (
 )
 SELECT
     p.Id AS patient_id,
-    TIMESTAMPDIFF(YEAR, p.BIRTHDATE, d.as_of_date) AS age,
+    TIMESTAMPDIFF(YEAR, p.BIRTHDATE, LEAST(COALESCE(p.DEATHDATE, d.as_of_date), d.as_of_date)) AS age,
     COUNT(e.Id) AS encounter_count,
     DATE(MIN(e.START)) AS first_encounter,
     DATE(MAX(e.START)) AS last_encounter,
@@ -115,7 +115,7 @@ FROM patients p
 JOIN encounters e
     ON p.Id = e.PATIENT
 CROSS JOIN dataset_end d
-GROUP BY p.Id, p.BIRTHDATE, d.as_of_date
+GROUP BY p.Id, p.BIRTHDATE, p.DEATHDATE, d.as_of_date
 ORDER BY encounter_count DESC
 LIMIT 15;
 
@@ -157,7 +157,7 @@ WITH dataset_end AS (
 SELECT
     COALESCE(p.MARITAL, 'Unknown') AS marital_status,
     COUNT(*) AS patient_count,
-    ROUND(AVG(TIMESTAMPDIFF(YEAR, p.BIRTHDATE, d.as_of_date)), 2) AS average_age,
+    ROUND(AVG(TIMESTAMPDIFF(YEAR, p.BIRTHDATE, LEAST(COALESCE(p.DEATHDATE, d.as_of_date), d.as_of_date))), 2) AS average_age,
     SUM(CASE WHEN p.DEATHDATE IS NOT NULL THEN 1 ELSE 0 END) AS patients_with_death_date
 FROM patients p
 CROSS JOIN dataset_end d

@@ -1,0 +1,206 @@
+{
+  "source": "Données synthétiques, graine 42, 400 patients demandés",
+  "currency": "USD",
+  "query_file": "queries/07_portfolio_summary.sql",
+  "query_sha256": "24eb45d1ad3942d9148536363187835fcc8ce4449b8ca4e29f010709f7fc2a63",
+  "activity": [
+    {
+      "encounter_class": "ambulatory",
+      "encounter_count": 3478,
+      "volume_share_pct": 44.62,
+      "total_claim_cost": 2281717.05,
+      "cost_share_pct": 16.24,
+      "valid_duration_count": 3448,
+      "average_hours": 1.19,
+      "median_hours": 0.99
+    },
+    {
+      "encounter_class": "outpatient",
+      "encounter_count": 1779,
+      "volume_share_pct": 22.83,
+      "total_claim_cost": 1609520.55,
+      "cost_share_pct": 11.46,
+      "valid_duration_count": 1767,
+      "average_hours": 1.83,
+      "median_hours": 1.54
+    },
+    {
+      "encounter_class": "urgentcare",
+      "encounter_count": 1046,
+      "volume_share_pct": 13.42,
+      "total_claim_cost": 2272822.85,
+      "cost_share_pct": 16.18,
+      "valid_duration_count": 1036,
+      "average_hours": 3.49,
+      "median_hours": 2.93
+    },
+    {
+      "encounter_class": "wellness",
+      "encounter_count": 782,
+      "volume_share_pct": 10.03,
+      "total_claim_cost": 282409.7,
+      "cost_share_pct": 2.01,
+      "valid_duration_count": 773,
+      "average_hours": 0.93,
+      "median_hours": 0.76
+    },
+    {
+      "encounter_class": "emergency",
+      "encounter_count": 486,
+      "volume_share_pct": 6.24,
+      "total_claim_cost": 2971004.39,
+      "cost_share_pct": 21.15,
+      "valid_duration_count": 484,
+      "average_hours": 7.19,
+      "median_hours": 6.11
+    },
+    {
+      "encounter_class": "inpatient",
+      "encounter_count": 223,
+      "volume_share_pct": 2.86,
+      "total_claim_cost": 4629056.33,
+      "cost_share_pct": 32.96,
+      "valid_duration_count": 220,
+      "average_hours": 86.01,
+      "median_hours": 75.58
+    }
+  ],
+  "coverage": [
+    {
+      "payer_name": "Dual Eligible",
+      "encounter_count": 984,
+      "total_claim_cost": 1794280.13,
+      "covered_amount": 1603214.53,
+      "uncovered_amount": 191065.6,
+      "weighted_coverage_pct": 89.35
+    },
+    {
+      "payer_name": "NO_INSURANCE",
+      "encounter_count": 831,
+      "total_claim_cost": 1526467.32,
+      "covered_amount": 0.0,
+      "uncovered_amount": 1526467.32,
+      "weighted_coverage_pct": 0.0
+    },
+    {
+      "payer_name": "Humana",
+      "encounter_count": 826,
+      "total_claim_cost": 1584102.84,
+      "covered_amount": 1069505.26,
+      "uncovered_amount": 514597.58,
+      "weighted_coverage_pct": 67.51
+    },
+    {
+      "payer_name": "Anthem",
+      "encounter_count": 817,
+      "total_claim_cost": 1417402.93,
+      "covered_amount": 1012270.26,
+      "uncovered_amount": 405132.67,
+      "weighted_coverage_pct": 71.42
+    },
+    {
+      "payer_name": "Cigna",
+      "encounter_count": 773,
+      "total_claim_cost": 1428707.78,
+      "covered_amount": 989316.07,
+      "uncovered_amount": 439391.71,
+      "weighted_coverage_pct": 69.25
+    },
+    {
+      "payer_name": "Blue Cross Blue Shield",
+      "encounter_count": 747,
+      "total_claim_cost": 1390010.67,
+      "covered_amount": 1035677.12,
+      "uncovered_amount": 354333.55,
+      "weighted_coverage_pct": 74.51
+    },
+    {
+      "payer_name": "Aetna",
+      "encounter_count": 721,
+      "total_claim_cost": 1074555.53,
+      "covered_amount": 758337.9,
+      "uncovered_amount": 316217.63,
+      "weighted_coverage_pct": 70.57
+    },
+    {
+      "payer_name": "Medicare",
+      "encounter_count": 691,
+      "total_claim_cost": 1156093.86,
+      "covered_amount": 905779.55,
+      "uncovered_amount": 250314.31,
+      "weighted_coverage_pct": 78.35
+    },
+    {
+      "payer_name": "UnitedHealthcare",
+      "encounter_count": 686,
+      "total_claim_cost": 1242272.83,
+      "covered_amount": 901879.79,
+      "uncovered_amount": 340393.04,
+      "weighted_coverage_pct": 72.6
+    },
+    {
+      "payer_name": "Medicaid",
+      "encounter_count": 680,
+      "total_claim_cost": 1386913.04,
+      "covered_amount": 1159743.78,
+      "uncovered_amount": 227169.26,
+      "weighted_coverage_pct": 83.62
+    },
+    {
+      "payer_name": "Payeur non renseigné",
+      "encounter_count": 38,
+      "total_claim_cost": 45723.94,
+      "covered_amount": 27554.86,
+      "uncovered_amount": 18169.08,
+      "weighted_coverage_pct": 60.26
+    }
+  ],
+  "quality": [
+    {
+      "metric": "missing_stop",
+      "affected": 64,
+      "denominator": 7794
+    },
+    {
+      "metric": "negative_duration",
+      "affected": 2,
+      "denominator": 7794
+    },
+    {
+      "metric": "zero_duration",
+      "affected": 3,
+      "denominator": 7794
+    },
+    {
+      "metric": "missing_payer",
+      "affected": 38,
+      "denominator": 7794
+    },
+    {
+      "metric": "before_birth",
+      "affected": 0,
+      "denominator": 7794
+    },
+    {
+      "metric": "after_death",
+      "affected": 0,
+      "denominator": 7794
+    },
+    {
+      "metric": "procedure_patient_mismatch",
+      "affected": 0,
+      "denominator": 13839
+    }
+  ],
+  "overview": {
+    "patients": 400,
+    "encounters": 7794,
+    "procedures": 13839,
+    "first_encounter": "2011-01-19 15:15:52",
+    "last_encounter": "2022-12-25 22:18:07",
+    "valid_durations": 7728,
+    "total_claim_cost": 14046530.87,
+    "covered_amount": 9463279.12,
+    "weighted_coverage_pct": 67.37
+  }
+}

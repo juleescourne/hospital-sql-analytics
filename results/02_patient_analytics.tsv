@@ -1,77 +1,77 @@
 gender	age_group	patient_count
-F	0-17	26
-F	18-29	33
-F	30-39	20
-F	40-49	20
-F	50-59	19
-F	60-69	22
-F	70-79	25
-F	80+	26
-M	0-17	32
-M	18-29	30
-M	30-39	25
-M	40-49	21
-M	50-59	27
-M	60-69	24
-M	70-79	25
-M	80+	25
+F	0-17	28
+F	18-29	36
+F	30-39	28
+F	40-49	17
+F	50-59	21
+F	60-69	21
+F	70-79	22
+F	80+	18
+M	0-17	35
+M	18-29	36
+M	30-39	24
+M	40-49	19
+M	50-59	32
+M	60-69	21
+M	70-79	21
+M	80+	21
 ethnicity	patient_count	percentage
-hispanic	220	55.00
-nonhispanic	180	45.00
+hispanic	212	53.00
+nonhispanic	188	47.00
 race	gender	patient_count
-asian	F	43
-asian	M	45
-black	F	31
-black	M	47
-native	F	38
-native	M	41
-other	F	36
-other	M	39
-white	F	43
-white	M	37
+asian	F	42
+asian	M	41
+black	F	37
+black	M	39
+native	F	32
+native	M	42
+other	F	34
+other	M	40
+white	F	46
+white	M	47
 total_patients	patients_with_death_date	share_with_death_date_pct
-400	38	9.50
+400	39	9.75
 average_age_at_death	minimum_age_at_death	maximum_age_at_death
-57.24	4	90
+50.67	4	90
 city	state	patient_count
-Quincy	Massachusetts	73
-Springfield	Massachusetts	70
-Lowell	Massachusetts	68
-Boston	Massachusetts	68
-Cambridge	Massachusetts	64
-Worcester	Massachusetts	57
+Quincy	Massachusetts	77
+Lowell	Massachusetts	74
+Springfield	Massachusetts	72
+Boston	Massachusetts	60
+Cambridge	Massachusetts	59
+Worcester	Massachusetts	58
 county	state	patient_count
-Quincy County	Massachusetts	73
-Springfield County	Massachusetts	70
-Lowell County	Massachusetts	68
-Boston County	Massachusetts	68
-Cambridge County	Massachusetts	64
-Worcester County	Massachusetts	57
+Quincy County	Massachusetts	77
+Lowell County	Massachusetts	74
+Springfield County	Massachusetts	72
+Boston County	Massachusetts	60
+Cambridge County	Massachusetts	59
+Worcester County	Massachusetts	58
 patient_id	age	encounter_count	first_encounter	last_encounter	months_between_first_and_last
+02e0f81e-08d6-44fc-92a3-231885fd5560	32	95	2011-03-12	2022-12-21	141
+bc95bdd7-dad1-4590-ab0a-ec6286d0a34c	85	94	2011-11-17	2022-07-13	127
+4bf32f9e-5569-4fd9-951b-7d7983881273	30	91	2011-08-05	2022-09-22	133
+0faea29a-04a5-464c-bd7f-c8e64086d68b	72	89	2011-10-31	2022-12-20	133
 52e974df-1b26-4711-bd7d-a5c98cda93b0	36	86	2011-09-17	2021-09-02	119
 8e3c62bf-bc9e-4acd-b60f-fe09c936d60a	55	86	2011-11-22	2020-08-23	105
+0a8e1a0a-4d6a-4c85-be4a-9853576f6394	66	85	2011-04-14	2022-12-25	140
 14088f65-7284-473d-9cbe-74b1e878d8c0	39	85	2012-10-10	2022-12-25	122
-24cb358a-01d7-422e-a768-b0aefaf7bb98	65	83	2012-12-19	2021-10-23	106
 55cc5c7c-28cc-42f8-9824-4984a65d60e4	35	82	2013-01-26	2022-12-19	118
 a9fe494e-304c-4b39-b6ab-eff0cd1d19da	54	82	2011-05-29	2022-01-23	127
+4252cfa1-386c-490a-a448-400a00feef23	84	82	2013-05-25	2022-11-30	114
+e72fa7e9-e30c-40fd-8349-c174ab0be280	76	77	2013-03-06	2022-03-21	108
+3fcb7678-f20e-48c1-aa25-eba2be74ff4e	15	76	2012-06-16	2022-12-16	125
 1a8193be-2f5e-4ff6-97bf-1e81dfef2eb6	92	75	2011-11-26	2022-10-29	131
-3299c5a2-ba83-43e7-9e80-b24f491f0eed	15	73	2012-07-22	2020-06-13	94
 98bdd2b8-6908-4ea0-a7f9-2e136a5bd0d0	21	72	2011-07-06	2018-08-11	85
-3ab1534d-b981-4055-aefa-8e4e20985aac	4	72	2013-01-16	2020-03-22	86
-b528bf5e-e21a-4503-b0b3-a9220817786c	52	69	2013-07-16	2021-04-09	92
-3a03ce9e-1c91-4142-b88d-7439a9e02b64	45	69	2012-08-12	2021-06-24	106
-2d4ddcff-e996-4ed1-920f-a28b0d77eb92	88	68	2013-05-07	2022-12-22	115
-03d11260-aaaa-4602-a886-115ff9f4fbcd	92	65	2013-08-11	2021-11-17	99
-fe3511b8-1282-4458-ba76-04eb2029bed0	26	65	2011-12-20	2018-09-07	80
 encounter_range	patient_count
 1	2
-2-10	172
-11-20	106
-21-50	90
-51+	28
+2-10	151
+11-20	111
+21-50	103
+51+	30
 average_encounters_per_patient	minimum_encounters	maximum_encounters
-17.99	1	86
+19.63	1	95
 marital_status	patient_count	average_age	patients_with_death_date
-M	145	50.29	15
-	138	46.42	13
-S	117	47.07	10
+	136	42.51	10
+S	133	43.71	9
+M	131	47.85	20

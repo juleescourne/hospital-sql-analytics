@@ -4,19 +4,17 @@
 Le dataset d'origine n'est pas redistribué. Ce script produit cinq CSV de structure
 identique, de sorte que le schéma et les requêtes s'exécutent sans compte externe.
 
-Les données sont **cohérentes**, pas aléatoires : un patient a un âge, ses passages
-suivent son parcours dans le temps, les coûts dépendent de la classe de passage, et
-la couverture assureur dépend du payeur. Sans cela, les requêtes analytiques
-renverraient des résultats sans structure, et rien ne serait démontré.
+Les données sont aléatoires avec une graine fixe et des règles de cohérence :
+les passages commencent après la naissance, les coûts dépendent de la classe
+et la couverture du payeur. Ces choix sont pédagogiques, sans calibration clinique.
 
 Défauts volontaires
 -------------------
 Quelques anomalies sont injectées pour que les contrôles qualité de
 ``queries/05_data_quality_checks.sql`` aient matière à détecter :
-    - passages sans date de fin (patients encore hospitalisés) ;
+    - passages sans date de fin (information volontairement manquante) ;
     - une poignée de dates de fin antérieures à la date de début ;
     - quelques passages sans payeur ;
-    - un doublon d'identifiant patient.
 
 Usage :
     python scripts/generate_sample_data.py [--patients 400] [--seed 42]
@@ -83,11 +81,13 @@ def weighted_choice(rng: random.Random, options: dict) -> str:
 
 
 def build(patients_count: int, seed: int) -> dict[str, list[dict]]:
+    if patients_count < 1:
+        raise ValueError('Le nombre de patients doit être positif.')
     rng = random.Random(seed)
 
     organizations = [{
         "Id": "org-" + str(uuid.UUID(int=rng.getrandbits(128), version=4)),
-        "NAME": "Massachusetts General Hospital", "ADDRESS": "55 Fruit Street",
+        "NAME": "Hôpital de démonstration (fictif)", "ADDRESS": "1 Sample Street",
         "CITY": "Boston", "STATE": "MA", "ZIP": "02114",
     }]
     org_id = organizations[0]["Id"]
@@ -136,7 +136,8 @@ def build(patients_count: int, seed: int) -> dict[str, list[dict]]:
 
         # Nombre de passages : distribution très asymétrique, comme en réalité
         visits = max(1, int(rng.lognormvariate(2.6, 0.9)))
-        last_stop = datetime(START_YEAR, 1, 1) + timedelta(days=rng.randint(0, 900))
+        first_possible = max(datetime(START_YEAR, 1, 1), datetime.combine(birthdate, datetime.min.time()))
+        last_stop = first_possible + timedelta(days=rng.randint(0, 900))
         payer_pref = rng.choice(payers)
 
         for _ in range(visits):
@@ -151,6 +152,11 @@ def build(patients_count: int, seed: int) -> dict[str, list[dict]]:
             _, median_hours, base_cost, cost_sd = ENCOUNTER_CLASSES[encounter_class]
             duration = max(0.25, rng.lognormvariate(0, 0.6) * median_hours)
             stop = start + timedelta(hours=duration)
+            # Fin du passage dans la période observée et au plus tard le jour du décès.
+            latest_stop = datetime(END_YEAR + 1, 1, 1) - timedelta(seconds=1)
+            if deathdate:
+                latest_stop = min(latest_stop, datetime.combine(deathdate, datetime.max.time()))
+            stop = min(stop, latest_stop)
 
             base = max(60.0, rng.gauss(base_cost, cost_sd))
             payer = payer_pref if rng.random() < 0.85 else rng.choice(payers)
@@ -188,7 +194,7 @@ def build(patients_count: int, seed: int) -> dict[str, list[dict]]:
     # --- Défauts volontaires, pour que les contrôles qualité aient du grain à moudre
     if len(encounters) > 60:
         for enc in rng.sample(encounters, k=max(3, len(encounters) // 120)):
-            enc["STOP"] = ""                                   # patient encore présent
+            enc["STOP"] = ""                                   # date de fin manquante
         for enc in rng.sample(encounters, k=3):
             enc["STOP"] = enc["START"]                          # durée nulle
         for enc in rng.sample(encounters, k=2):

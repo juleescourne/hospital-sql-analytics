@@ -1,0 +1,29 @@
+encounter_class	encounter_count	volume_share_pct	total_claim_cost	cost_share_pct	valid_duration_count	average_hours	median_hours
+ambulatory	3478	44.62	2281717.05	16.24	3448	1.19	0.99
+outpatient	1779	22.83	1609520.55	11.46	1767	1.83	1.54
+urgentcare	1046	13.42	2272822.85	16.18	1036	3.49	2.93
+wellness	782	10.03	282409.70	2.01	773	0.93	0.76
+emergency	486	6.24	2971004.39	21.15	484	7.19	6.11
+inpatient	223	2.86	4629056.33	32.96	220	86.01	75.58
+payer_name	encounter_count	total_claim_cost	covered_amount	uncovered_amount	weighted_coverage_pct
+Dual Eligible	984	1794280.13	1603214.53	191065.60	89.35
+NO_INSURANCE	831	1526467.32	0.00	1526467.32	0.00
+Humana	826	1584102.84	1069505.26	514597.58	67.51
+Anthem	817	1417402.93	1012270.26	405132.67	71.42
+Cigna	773	1428707.78	989316.07	439391.71	69.25
+Blue Cross Blue Shield	747	1390010.67	1035677.12	354333.55	74.51
+Aetna	721	1074555.53	758337.90	316217.63	70.57
+Medicare	691	1156093.86	905779.55	250314.31	78.35
+UnitedHealthcare	686	1242272.83	901879.79	340393.04	72.60
+Medicaid	680	1386913.04	1159743.78	227169.26	83.62
+Payeur non renseigné	38	45723.94	27554.86	18169.08	60.26
+metric	affected	denominator
+missing_stop	64	7794
+negative_duration	2	7794
+zero_duration	3	7794
+missing_payer	38	7794
+before_birth	0	7794
+after_death	0	7794
+procedure_patient_mismatch	0	13839
+patients	encounters	procedures	first_encounter	last_encounter	valid_durations	total_claim_cost	covered_amount	weighted_coverage_pct
+400	7794	13839	2011-01-19 15:15:52	2022-12-25 22:18:07	7728	14046530.87	9463279.12	67.37

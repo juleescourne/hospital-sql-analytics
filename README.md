@@ -1,23 +1,34 @@
-# Hospital SQL Analytics
+# Hospital SQL Analytics — activité, montants et qualité
 
-![MySQL 8.0+](https://img.shields.io/badge/MySQL-8.0%2B-4479A1)
-![Requêtes : 6 fichiers](https://img.shields.io/badge/requêtes-6%20fichiers-blue)
-[![MySQL](https://github.com/juleescourne/hospital-sql-analytics/actions/workflows/sql-demo.yml/badge.svg)](https://github.com/juleescourne/hospital-sql-analytics/actions/workflows/sql-demo.yml)
-[![Licence MIT](https://img.shields.io/badge/licence-MIT-lightgrey)](LICENSE)
+**Projet personnel de Data Analyst junior — Jules Courné**
+MySQL 8 · SQL analytique · Python · Contrôles qualité
 
-Étude analytique SQL sur des données hospitalières : contrôles qualité, profil des
-patients, activité et durées de passage, retours à 30 jours, coûts des actes et
-couverture assureur — avec les fonctions fenêtres, les cohortes et, surtout, les
-limites méthodologiques explicitées.
+Comment lire l’activité d’un établissement, les montants associés et leur couverture sans mélanger les indicateurs ? Cette étude répond à trois questions avec des requêtes SQL explicites et des résultats consultables.
 
-> Projet issu de mon portfolio Data — [juleescourne.github.io/portfolio-data-analyst](https://juleescourne.github.io/portfolio-data-analyst/)
+**[Explorer les trois analyses dans le portfolio](https://juleescourne.github.io/portfolio-data-analyst/#/hospital)** · **[Lire les résultats](results/README.md)** · **[Voir les requêtes de synthèse](queries/07_portfolio_summary.sql)**
 
----
+Les données sont **entièrement synthétiques** : 400 patients, 7 794 passages et 13 839 actes, avec une graine fixe. Les règles du générateur déterminent les distributions ; les résultats ne décrivent pas un établissement réel.
 
-## Exécuter et consulter les résultats
+## Trois questions, trois lectures
 
-[Résultats et synthèse de trois indicateurs](results/README.md)
-· [Workflow MySQL](https://github.com/juleescourne/hospital-sql-analytics/actions/workflows/sql-demo.yml)
+| Question | Résultat du jeu de démonstration | Lecture |
+| --- | --- | --- |
+| Quels passages concentrent les volumes et les durées ? | Ambulatoire : 44,62 % des passages. Hospitalisation : 2,86 %, avec une durée médiane de 75,58 h. | Distinguer le nombre de passages de leur durée ; celle-ci ne mesure pas le travail soignant. |
+| Quelle part des montants est couverte par les payeurs ? | 67,37 %, calculés comme somme des couvertures / somme des montants. | Les volumes et le profil des passages comptent ; ce taux ne classe pas la qualité des assureurs. |
+| Quelles anomalies limitent la lecture ? | 64 fins manquantes, 2 durées négatives et 38 payeurs non renseignés. | Durées calculées sur 7 728 passages ; montants sur 7 794. Les anomalies ne sont pas remplacées par zéro. |
+
+## Ce que j’ai réalisé
+
+- Modélisation de cinq tables avec clés étrangères, types `DECIMAL` pour les montants et index.
+- Contrôles de complétude, dates, doublons et cohérence entre actes, passages et patients.
+- Jointures, CTE et fonctions fenêtres : `LEAD`, `LAG`, `ROW_NUMBER`, `DENSE_RANK`, `NTILE`, cumuls et moyennes mobiles.
+- Calcul d’une médiane par classement, d’un taux de couverture pondéré et de cohortes d’activité.
+- Quatre tests Python et sept groupes de tests MySQL sur des cas dont les résultats sont connus.
+- Restitution des résultats avec leurs dénominateurs, leur interprétation et les vérifications à poursuivre.
+
+## Reproduire
+
+Prérequis : Docker Compose avec `--wait`, Python 3.10+ et Bash.
 
 ```bash
 git clone https://github.com/juleescourne/hospital-sql-analytics.git
@@ -25,139 +36,43 @@ cd hospital-sql-analytics
 bash scripts/run_demo.sh
 ```
 
-Prérequis : Docker Compose avec `--wait`, Python 3 et Bash. La commande génère les
-données **avant** le montage Docker, attend le serveur MySQL final, recrée la base
-`hospital_analytics`, puis exécute les six fichiers SQL. Elle exporte les résultats
-dans `results/`. Cette base est réservée à la démonstration synthétique : ne pas
-y stocker des données à conserver.
+Cette commande recrée la base **réservée à la démonstration** `hospital_analytics`, génère et charge les données, exécute les tests puis les sept fichiers SQL. Ne pas utiliser cette base pour conserver d’autres données. Les tests SQL utilisent une transaction annulée et n’altèrent pas les résultats de démonstration.
 
-Pour un serveur MySQL existant, `bash scripts/run_demo.sh --local` utilise
-`MYSQL_BIN`, `MYSQL_HOST`, `MYSQL_PORT`, `MYSQL_USER` et, au besoin, `MYSQL_PWD` ou
-`MYSQL_SOCKET`. Ce mode recrée aussi la base de démonstration.
+Pour un serveur MySQL 8 existant : `bash scripts/run_demo.sh --local`. Les variables de connexion sont décrites dans [INSTALLATION.md](INSTALLATION.md). GitHub Actions exécute le parcours Docker : [workflow](.github/workflows/sql-demo.yml).
 
-Le dataset Maven Analytics n'est pas redistribué. Le générateur fournit 400 patients,
-7 160 passages et 12 743 actes, avec anomalies intentionnelles documentées dans
-la synthèse. Le temps de téléchargement de l'image Docker dépend de la connexion.
+Pour vérifier seulement le générateur, sans base ni dépendance Python supplémentaire :
 
----
-
-## Ce que le projet démontre
-
-| Domaine | Éléments concrets |
-| --- | --- |
-| SQL analytique | CTE, `LEAD`, `LAG`, `ROW_NUMBER`, `DENSE_RANK`, `NTILE`, cumuls et moyennes mobiles avec `ROWS BETWEEN` |
-| Qualité des données | 18 contrôles : complétude, validité, unicité, intégrité référentielle |
-| Modélisation | typage adapté (`DECIMAL` pour la monnaie, jamais `FLOAT`), index composite servant la fonction fenêtre |
-| Conception d'indicateurs | taux de couverture **pondéré**, cohortes de rétention, quartiles de dépense |
-| Rigueur | chaque indicateur discutable est accompagné de ce qu'il ne mesure pas |
-
----
-
-## Le modèle
-
-```mermaid
-erDiagram
-    PATIENTS ||--o{ ENCOUNTERS : genere
-    ORGANIZATIONS ||--o{ ENCOUNTERS : accueille
-    PAYERS ||--o{ ENCOUNTERS : couvre
-    PATIENTS ||--o{ PROCEDURES : recoit
-    ENCOUNTERS ||--o{ PROCEDURES : contient
+```bash
+python3 -m unittest discover -s tests -v
 ```
 
-Deux décisions structurent le schéma :
+## Parcourir les fichiers
 
-**`DECIMAL(14,2)` pour tous les montants**, jamais `FLOAT`. Sur des milliers de
-passages agrégés, les erreurs d'arrondi binaires faussent visiblement les totaux
-financiers.
-
-**Un index composite `(PATIENT, START)`** qui sert directement la fenêtre
-`LEAD(...) OVER (PARTITION BY PATIENT ORDER BY START)` de la requête de retour à
-30 jours — le plan effectif doit être vérifié avec EXPLAIN.
-
----
-
-## Les requêtes
-
-| Fichier | Objet |
+| Fichier | Rôle |
 | --- | --- |
-| `05_data_quality_checks.sql` | **à lancer en premier** — nuls, doublons, dates invalides, intégrité |
-| `01_data_exploration.sql` | volumétrie et plages de valeurs |
-| `02_patient_analytics.sql` | démographie, âges, géographie, recours aux soins |
-| `03_encounter_analytics.sql` | activité, durées, retours à 30 jours, couverture payeur |
-| `04_procedure_financial_analytics.sql` | actes les plus fréquents et les plus coûteux |
-| `06_window_functions_cohorts.sql` | classements, cumuls, quartiles, rétention par cohorte |
+| [05 — qualité](queries/05_data_quality_checks.sql) | Contrôles à exécuter avant l’analyse |
+| [01 — exploration](queries/01_data_exploration.sql) | Volumes, dates, répartition des classes |
+| [02 — patients](queries/02_patient_analytics.sql) | Profils et activité enregistrée |
+| [03 — passages](queries/03_encounter_analytics.sql) | Durées, retours, montants et couverture |
+| [04 — actes](queries/04_procedure_financial_analytics.sql) | Fréquence et concentration des coûts des actes |
+| [06 — fonctions fenêtres](queries/06_window_functions_cohorts.sql) | Classements, calendrier mensuel et cohortes |
+| [07 — synthèse métier](queries/07_portfolio_summary.sql) | Trois tableaux et un bilan pour le portfolio |
+| [Résultats et interprétations](results/README.md) | Sorties MySQL, CSV et limites |
+| [Tests SQL](scripts/check_sql.py) | Vérification des vraies requêtes sur de petits cas |
+| [Dictionnaire](docs/data_dictionary.md) | Grain, colonnes et règles des indicateurs |
 
-Le fichier `05` porte le numéro 5 mais s'exécute en premier : interpréter des
-agrégats sans avoir mesuré la qualité de la source, c'est produire des chiffres faux
-avec assurance.
+## Trois choix à expliquer en entretien
 
----
+**Calculer le passage suivant avant de filtrer.** Un passage sans date de fin possède tout de même une date de début. Il reste dans la chronologie de `LEAD` et `LAG`. Le retour est ensuite retenu entre la fin valide du passage précédent et exactement 30 × 24 heures plus tard, bornes incluses. Ce comptage n’est pas un taux clinique de réadmission.
 
-## Deux détails qui font la différence
+**Pondérer la couverture par les montants.** `SUM(PAYER_COVERAGE) / SUM(TOTAL_CLAIM_COST)` mesure la part du montant total couverte. La moyenne des ratios répondrait à une autre question en donnant le même poids à chaque passage.
 
-### Le taux de couverture est pondéré
+**Distinguer un zéro d’une période non observée.** Le calendrier mensuel inclut les mois sans passage dans la fenêtre du fichier. Les cohortes affichent les années sans activité à zéro, mais pas les années futures. La dernière année peut être partielle : les cohortes ne prouvent ni fidélité ni qualité des soins.
 
-```sql
--- Correct : part du montant total effectivement prise en charge
-SUM(PAYER_COVERAGE) * 100.0 / NULLIF(SUM(TOTAL_CLAIM_COST), 0)
+## Limites
 
--- Faux : donne le même poids à un passage de 80 $ et à un séjour de 40 000 $
-AVG(PAYER_COVERAGE / TOTAL_CLAIM_COST) * 100
-```
+Les paramètres sont pédagogiques, sans calibration clinique. Les montants des actes et des passages sont analysés séparément et ne sont pas additionnés. Un montant non couvert ne prouve pas une dette du patient, une perte ou une marge. Les distributions par âge ou groupe démographique n’autorisent aucune conclusion clinique.
 
-### Un contrôle qu'aucune clé étrangère ne peut faire
+L’index apparaît dans le [plan d’exécution](results/explain.txt), suivi d’un tri. Aucun gain de performance n’est annoncé sans mesure comparative.
 
-```sql
-SELECT COUNT(*) AS procedure_encounter_patient_mismatches
-FROM procedures pr
-JOIN encounters e ON pr.ENCOUNTER = e.Id
-WHERE pr.PATIENT <> e.PATIENT;
-```
-
-Un acte dont le patient diffère de celui de son passage. Les deux clés étrangères
-sont valides prises séparément : seule une vérification croisée détecte
-l'incohérence.
-
----
-
-## Ce que ces indicateurs ne mesurent pas
-
-C'est le point le plus important du dépôt.
-
-**Le retour à 30 jours n'est pas un taux de réadmission.** La requête mesure
-l'intervalle jusqu'au passage suivant enregistré. Un taux validé exigerait une
-définition clinique du séjour index, des règles d'éligibilité et des exclusions.
-
-**La rétention par cohorte n'est pas de la fidélité.** Un patient absent d'une année
-peut avoir déménagé, guéri, changé d'établissement ou être décédé.
-
-**Les répartitions démographiques ne comparent pas des groupes.** Elles démontrent
-le `GROUP BY` sur des données synthétiques et ne permettent aucune inférence
-clinique.
-
----
-
-## Documentation
-
-| Document | Contenu |
-| --- | --- |
-| [INSTALLATION.md](INSTALLATION.md) | Docker, MySQL local ou jeu réel — et dépannage |
-| [UTILISATION.md](UTILISATION.md) | ordre d'exécution, lecture des résultats, production d'un dossier `results/` |
-| [ARCHITECTURE.md](ARCHITECTURE.md) | modèle, typage, index, techniques SQL, précautions méthodologiques |
-| [docs/data_dictionary.md](docs/data_dictionary.md) | dictionnaire des cinq tables |
-
----
-
-## Limites assumées
-
-- Données synthétiques : aucune interprétation clinique réelle.
-- Pas de vues ni d'agrégats matérialisés ; les résultats sont des exports statiques.
-- Le proxy de retour à 30 jours n'est pas un taux clinique validé.
-- Le plan d'exécution est publié ; aucune accélération n'est annoncée sans mesure.
-
----
-
-## Licence
-
-[MIT](LICENSE) — Jules Courné. Le dataset Maven Analytics n'est pas couvert par
-cette licence et n'est pas redistribué.
+Le jeu Maven Analytics d’origine n’est pas redistribué ; les résultats publiés proviennent du générateur synthétique du dépôt. Code sous [licence MIT](LICENSE).

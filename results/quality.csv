@@ -1,0 +1,8 @@
+﻿metric;affected;denominator
+missing_stop;64;7794
+negative_duration;2;7794
+zero_duration;3;7794
+missing_payer;38;7794
+before_birth;0;7794
+after_death;0;7794
+procedure_patient_mismatch;0;13839

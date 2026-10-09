@@ -1,189 +1,44 @@
-> Parcours vérifié : `bash scripts/run_demo.sh` (Docker) ; exports et interprétations
-> dans [results/README.md](results/README.md). Le script recrée uniquement la base
-> dédiée `hospital_analytics`. L’index est utilisé, mais le plan montre un tri.
+# Lire les analyses
 
-# Guide d'utilisation
+Commencer par `05_data_quality_checks.sql`, puis parcourir `01`, `02`, `03`, `04`, `06` et `07`. Le lanceur conserve cet ordre.
 
-Les six fichiers de requêtes se lisent dans un ordre précis. Ce guide explique
-lequel, ce que chaque famille répond, et comment interpréter les résultats sans
-leur faire dire plus qu'ils ne disent.
+## Qualité et dénominateurs
 
----
+Les contrôles portent sur la complétude, les intervalles, les montants, les doublons et les relations entre tables. Le contrôle chronologique compare aussi les passages aux dates de naissance et de décès.
 
-## Ordre d'exécution
+Les durées excluent les fins absentes ou antérieures au début. Les durées nulles sont conservées et signalées. Les montants sont disponibles pour tous les passages du jeu synthétique : ils restent dans le calcul des coûts même lorsque la durée est inexploitable. Les motifs de qualité peuvent se chevaucher.
 
-```mermaid
-flowchart LR
-    A["05 - qualite des donnees"] --> B["01 - exploration"]
-    B --> C["02 - patients"]
-    B --> D["03 - passages"]
-    B --> E["04 - actes et couts"]
-    C --> F["06 - fenetres et cohortes"]
-    D --> F
-```
+## Activité et parcours
 
-> **Commencez par `05`, malgré son numéro.** Interpréter des agrégats sans avoir
-> mesuré les nuls, les doublons et les dates invalides revient à produire des
-> chiffres faux avec assurance.
+Dans `03`, le passage suivant est déterminé sur tous les débuts enregistrés, ordonnés par `(START, Id)`. On filtre ensuite les passages de référence dont la fin est exploitable. Un retour est compté si `next_start >= STOP` et `next_start <= DATE_ADD(STOP, INTERVAL 30 DAY)`.
 
-```bash
-mysql -u root -p hospital_analytics < queries/05_data_quality_checks.sql
-```
+La borne vaut exactement 30 × 24 heures, pas 30 jours tronqués à l’entier. Les chevauchements sont exclus. Ce comptage ne définit pas un taux de réadmission : aucune population clinique éligible ni fenêtre complète de suivi n’est construite.
 
----
+L’âge est calculé à la date de décès lorsqu’elle précède la fin du fichier, sinon à cette fin. Les champs démographiques restent descriptifs.
 
-## 1. Contrôler la qualité — `05`
+## Montants et couverture
 
-Dix-huit contrôles répartis en cinq familles :
+La couverture globale est `SUM(PAYER_COVERAGE) / SUM(TOTAL_CLAIM_COST)`. Son dénominateur est un montant, pas un nombre de patients. Un payeur non renseigné reste une catégorie distincte : cela ne signifie pas que sa couverture est nulle.
 
-| Famille | Ce qui est vérifié |
-| --- | --- |
-| Volumétrie | nombre de lignes par table |
-| Complétude | valeurs nulles ou vides sur les colonnes qui comptent |
-| Validité | dates de fin antérieures au début, montants négatifs, couverture supérieure au montant |
-| Unicité | doublons d'identifiants |
-| Intégrité | passages orphelins, actes rattachés à un patient différent de celui du passage |
+Les coûts des actes dans `04` ne sont pas ajoutés à ceux des passages. Les montants non couverts ne sont pas automatiquement un reste à charge patient.
 
-Le contrôle le plus intéressant est le dernier :
+## Fonctions fenêtres
 
-```sql
-SELECT COUNT(*) AS procedure_encounter_patient_mismatches
-FROM procedures pr
-JOIN encounters e ON pr.ENCOUNTER = e.Id
-WHERE pr.PATIENT <> e.PATIENT;
-```
+`06` propose classements, parts, cumul, variation mensuelle, moyenne mobile et cohortes. Le calendrier conserve les mois sans passage : trois lignes représentent trois mois consécutifs. Les deux premiers mois utilisent respectivement une et deux observations. Les mois en dehors des bornes du fichier ne sont pas ajoutés.
 
-Il détecte une incohérence qu'aucune clé étrangère ne peut attraper : un acte dont
-le patient diffère de celui du passage auquel il est rattaché. Les deux clés
-étrangères sont pourtant valides prises séparément.
+Les cohortes sont définies par l’année du premier passage enregistré. Une année observée sans activité vaut zéro ; une année future est absente. Les décès, la couverture inégale et les périodes partielles limitent les comparaisons entre cohortes.
 
-**Ce qu'il faut faire du résultat.** Sur le jeu synthétique, les anomalies remontées
-sont celles injectées volontairement. Sur un jeu réel, notez les volumes concernés
-avant d'interpréter la suite : 5 % de passages sans date de fin change la lecture
-des durées moyennes.
+## Synthèse consultable
 
----
+`07_portfolio_summary.sql` produit quatre jeux de résultats :
 
-## 2. Prendre la mesure du jeu — `01`
+1. Volumes, parts de montants, durées moyennes et médianes par classe.
+2. Montants couverts et non couverts par payeur.
+3. Compteurs de qualité avec leurs dénominateurs.
+4. Bilan global de rapprochement.
 
-Volumétrie, plages de dates, valeurs distinctes. C'est la prise de contact : combien
-de patients, sur quelle période, combien de classes de passage.
+Les [CSV et leur synthèse](results/README.md) permettent de lire les résultats sans installer MySQL. Les sept TSV regroupent plusieurs tableaux successifs avec leurs en-têtes ; les quatre CSV métier contiennent chacun un seul tableau.
 
----
+## Contrôles avant publication
 
-## 3. Profil des patients — `02`
-
-Répartition par tranche d'âge et sexe, origine, géographie, recours aux soins.
-
-L'âge est mesuré **à la date de décès quand elle existe**, à la fin de la fenêtre
-d'observation sinon. Sans cette précaution, un patient décédé en 2013 se verrait
-attribuer l'âge qu'il aurait eu en 2022.
-
-> Ces répartitions démontrent le `GROUP BY` et l'agrégation conditionnelle sur des
-> données synthétiques. Elles ne permettent d'inférer aucune différence clinique
-> réelle entre groupes.
-
----
-
-## 4. Activité et parcours — `03`
-
-Activité annuelle, durées par classe de passage, distribution des durées, activité
-par jour, mois, trimestre et tranche horaire, couverture par payeur.
-
-### Le retour à 30 jours
-
-```sql
-WITH ordered_encounters AS (
-    SELECT PATIENT, START, STOP,
-           LEAD(START) OVER (PARTITION BY PATIENT ORDER BY START, Id) AS next_start
-    FROM encounters
-    WHERE STOP IS NOT NULL
-)
-...
-WHERE gap_days BETWEEN 0 AND 30;
-```
-
-`LEAD` récupère la date du passage suivant du même patient. Le tri porte sur
-`(START, Id)` et non sur `START` seul : deux passages à la même seconde donneraient
-sinon un ordre non déterministe.
-
-**C'est un indicateur indirect, pas un taux de réadmission.** Un taux validé
-exigerait une définition clinique du séjour index, des règles d'éligibilité et des
-exclusions. Le présenter autrement serait une erreur d'interprétation.
-
-### Le taux de couverture pondéré
-
-```sql
-ROUND(SUM(PAYER_COVERAGE) * 100.0 / NULLIF(SUM(TOTAL_CLAIM_COST), 0), 2)
-```
-
-C'est bien une somme de sommes, pas une moyenne de ratios. La moyenne des ratios
-donnerait le même poids à un passage de 80 $ et à une hospitalisation de 40 000 $.
-
----
-
-## 5. Actes et coûts — `04`
-
-Actes les plus fréquents, actes les plus coûteux, coût par classe de passage, reste
-à charge.
-
-Fréquence et coût ne se recouvrent pas : un acte courant et peu cher peut peser plus
-lourd au total qu'un acte rare et onéreux. Les deux classements sont donc produits
-séparément.
-
----
-
-## 6. Classements, cumuls et cohortes — `06`
-
-| Requête | Technique | Question |
-| --- | --- | --- |
-| 1 | `ROW_NUMBER` | top 5 des actes les plus coûteux par classe de passage |
-| 2 | `DENSE_RANK` + `SUM(SUM()) OVER ()` | classement des payeurs et part du total |
-| 3 | `SUM() OVER`, `LAG`, moyenne mobile | activité mensuelle, cumul, variation, tendance |
-| 4 | `NTILE(4)` | quartiles de dépense patient — mesure la concentration |
-| 5 | cohortes | rétention par année de premier passage |
-| 6 | `LAG` | distribution des intervalles entre passages |
-
-### Lire la requête de quartiles
-
-`NTILE(4)` découpe les patients en quatre groupes de taille égale, ordonnés par
-dépense totale. La colonne `share_of_total_pct` révèle la concentration : si le
-dernier quartile concentre 70 % de la dépense, l'activité repose sur une minorité de
-patients — un fait structurant pour un établissement.
-
-### Lire la rétention
-
-Chaque patient appartient à la cohorte de son année de premier passage. On mesure
-combien réapparaissent l'année suivante, deux ans après, etc.
-
-> **C'est de la rétention d'activité enregistrée.** Un patient absent d'une année
-> peut avoir déménagé, guéri, changé d'établissement ou être décédé. Ce n'est ni de
-> la fidélité, ni de la continuité de soins.
-
----
-
-## Produire un dossier de résultats
-
-Pour figer les sorties et les partager :
-
-```bash
-mkdir -p results
-for f in queries/*.sql; do
-  name=$(basename "$f" .sql)
-  mysql -u root -p --table hospital_analytics < "$f" > "results/$name.txt"
-done
-```
-
-L'option `--table` produit des tableaux ASCII lisibles. Pour du Markdown ou du CSV,
-remplacez-la par `--batch` et traitez la sortie.
-
----
-
-## Adapter les requêtes
-
-| Besoin | Où intervenir |
-| --- | --- |
-| Changer la fenêtre de retour | `WHERE gap_days BETWEEN 0 AND 30` dans `03` |
-| Modifier les tranches d'âge | le `CASE` de la requête 1 de `02` |
-| Passer en quintiles | `NTILE(4)` → `NTILE(5)` dans `06` |
-| Élargir la moyenne mobile | `ROWS BETWEEN 2 PRECEDING` → `5 PRECEDING` dans `06` |
+`run_demo.sh` exécute quatre tests Python et sept groupes de tests sur les véritables requêtes SQL, puis rapproche les exports métier. Les tests SQL s’exécutent dans des transactions annulées. Consulter `scripts/check_sql.py` pour les petits cas et leurs résultats attendus.

@@ -30,6 +30,8 @@ Thumbs.db
 # Sortie generee par scripts/generate_sample_data.py (les CSV sont deja couverts
 # par la regle *.csv plus haut). Graine fixe : tout est reproductible.
 db/load_sample_data.sql
+db/load_maven.sql
+db/load_maven_container.sql
 
 # Published aggregate outputs on synthetic data only
 !results/*.tsv
@@ -40,3 +42,6 @@ __pycache__/
 !results/coverage.csv
 !results/quality.csv
 !results/overview.csv
+!results/annual.csv
+!results/sensitivity.csv
+!results/financial_sensitivity.csv

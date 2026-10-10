@@ -96,7 +96,15 @@ def main(command):
     assert rows[0]['median_hours'] == '2.50' and rows[0]['average_hours'] == '2.50', rows
     assert rows[0]['total_claim_cost'] == '500.00', rows
     print('OK : médiane paire et dénominateurs distincts pour volumes, durées et coûts.')
-    print('Sept groupes de contrôles SQL réussis ; données de démonstration préservées.')
+    fixture = encounter('a','2020-01-01','2020-01-01 01:00:00') + encounter('b','2020-01-02','2020-01-02 02:00:00') + encounter('c','2020-01-03','2020-01-07 04:00:00')
+    rows = case(fixture, '07_portfolio_summary.sql', 6)
+    scenarios = {r['scenario']:r for r in rows}
+    assert scenarios['all_recorded']['average_hours'] == '34.33', rows
+    assert scenarios['all_recorded']['median_hours'] == '2.00', rows
+    assert scenarios['without_over_24h']['encounter_count'] == '2', rows
+    assert scenarios['without_over_24h']['average_hours'] == '1.50', rows
+    print('OK : sensibilité aux durées longues, seuil explicite sans altérer la base.')
+    print('Huit groupes de contrôles SQL réussis ; données source préservées.')
 
 
 if __name__ == '__main__':

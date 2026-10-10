@@ -1,0 +1,7 @@
+﻿encounter_class;scenario;encounter_count;average_hours;median_hours
+ambulatory;all_recorded;12537;9.48;0.25
+ambulatory;without_lifetime_flags;12537;9.48;0.25
+ambulatory;without_over_24h;12532;0.92;0.25
+outpatient;all_recorded;6300;5.88;0.25
+outpatient;without_lifetime_flags;6300;5.88;0.25
+outpatient;without_over_24h;6293;0.28;0.25

@@ -6,7 +6,7 @@ Commencer par `05_data_quality_checks.sql`, puis parcourir `01`, `02`, `03`, `04
 
 Les contrôles portent sur la complétude, les intervalles, les montants, les doublons et les relations entre tables. Le contrôle chronologique compare aussi les passages aux dates de naissance et de décès.
 
-Les durées excluent les fins absentes ou antérieures au début. Les durées nulles sont conservées et signalées. Les montants sont disponibles pour tous les passages du jeu synthétique : ils restent dans le calcul des coûts même lorsque la durée est inexploitable. Les motifs de qualité peuvent se chevaucher.
+Les durées excluent les fins absentes ou antérieures au début. Les durées nulles sont conservées et signalées. Les montants sont disponibles pour tous les passages du jeu Maven / SyntheticMass : ils restent dans le calcul des coûts même lorsque la durée est inexploitable. Les motifs de qualité peuvent se chevaucher.
 
 ## Activité et parcours
 
@@ -30,15 +30,20 @@ Les cohortes sont définies par l’année du premier passage enregistré. Une a
 
 ## Synthèse consultable
 
-`07_portfolio_summary.sql` produit quatre jeux de résultats :
+`07_portfolio_summary.sql` produit sept jeux de résultats :
 
 1. Volumes, parts de montants, durées moyennes et médianes par classe.
 2. Montants couverts et non couverts par payeur.
 3. Compteurs de qualité avec leurs dénominateurs.
 4. Bilan global de rapprochement.
+5. Volumes annuels, avec 2022 partielle.
+6. Sensibilité des durées ambulatoires et externes.
+7. Sensibilité financière aux dates hors de la vie du patient.
 
-Les [CSV et leur synthèse](results/README.md) permettent de lire les résultats sans installer MySQL. Les sept TSV regroupent plusieurs tableaux successifs avec leurs en-têtes ; les quatre CSV métier contiennent chacun un seul tableau.
+Les [CSV et leur synthèse](results/README.md) permettent de lire les résultats sans installer MySQL. Les sept TSV regroupent plusieurs tableaux successifs avec leurs en-têtes ; les sept CSV métier contiennent chacun un seul tableau.
 
 ## Contrôles avant publication
 
-`run_demo.sh` exécute quatre tests Python et sept groupes de tests sur les véritables requêtes SQL, puis rapproche les exports métier. Les tests SQL s’exécutent dans des transactions annulées. Consulter `scripts/check_sql.py` pour les petits cas et leurs résultats attendus.
+`run_demo.sh` exécute quatre tests Python et huit groupes de tests sur les véritables requêtes SQL, puis rapproche les exports métier. Les tests SQL s’exécutent dans des transactions annulées. Consulter `scripts/check_sql.py` pour les petits cas et leurs résultats attendus.
+
+Les durées dites valides dans les champs techniques signifient seulement « début et fin renseignés et ordonnés ». Les 57 passages après décès restent dans la base et les agrégats principaux ; la sensibilité financière est publiée séparément. Le seuil de 24 h appliqué aux classes ambulatory/outpatient dans la sensibilité est exploratoire, pas une règle clinique.

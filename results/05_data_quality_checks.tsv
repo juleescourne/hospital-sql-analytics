@@ -1,17 +1,17 @@
 table_name	row_count
-patients	400
-encounters	7794
-procedures	13839
+patients	974
+encounters	27891
+procedures	47701
 organizations	1
 payers	10
 missing_birthdate	missing_gender	missing_race	missing_ethnicity	missing_city
 0	0	0	0	0
 missing_start	missing_stop	missing_patient_id	missing_organization_id	missing_payer_id	missing_total_claim_cost	missing_payer_coverage
-0	64	0	0	38	0	0
+0	0	0	0	0	0	0
 missing_start	missing_patient_id	missing_encounter_id	missing_description	missing_base_cost
 0	0	0	0	0
 encounters_with_negative_duration
-2
+0
 procedures_with_negative_duration
 0
 negative_base_encounter_cost	negative_total_claim_cost	negative_payer_coverage	coverage_above_claim_cost
@@ -31,6 +31,6 @@ procedures_without_encounter
 procedure_encounter_patient_mismatches
 0
 earliest_encounter_start	latest_encounter_start	earliest_encounter_stop	latest_encounter_stop
-2011-01-19 15:15:52	2022-12-25 22:18:07	2011-01-19 15:54:50	2022-12-25 22:39:49
+2011-01-02 09:26:36	2022-02-05 20:27:36	2011-01-02 12:58:36	2022-02-05 20:42:36
 encounters_before_birth	encounters_after_death	encounter_ends_after_death
-0	0	0
+0	53	57

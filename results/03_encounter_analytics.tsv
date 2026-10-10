@@ -1,89 +1,89 @@
 year	unique_patients	total_encounters	encounters_per_patient
-2011	120	536	4.47
-2012	249	1299	5.22
-2013	274	1779	6.49
-2014	178	1126	6.33
-2015	132	839	6.36
-2016	94	599	6.37
-2017	63	393	6.24
-2018	46	357	7.76
-2019	45	299	6.64
-2020	34	236	6.94
-2021	28	182	6.50
-2022	19	149	7.84
+2011	410	1336	3.26
+2012	559	2106	3.77
+2013	570	2495	4.38
+2014	630	3885	6.17
+2015	553	2469	4.46
+2016	552	2451	4.44
+2017	546	2360	4.32
+2018	535	2292	4.28
+2019	514	2228	4.33
+2020	519	2519	4.85
+2021	649	3530	5.44
+2022	103	220	2.14
 patients_with_encounters	patients_with_multiple_encounters	multiple_encounter_share_pct
-397	395	99.50
+974	854	87.68
 return_encounters_within_30_days	patients_with_return_within_30_days	average_gap_days
-4149	387	14.6
+16868	771	11.5
 encounter_class	encounter_count	average_hours	minimum_minutes	maximum_minutes
-inpatient	220	86.01	1007	21953
-emergency	484	7.19	68	2642
-urgentcare	1036	3.49	15	1364
-outpatient	1767	1.83	15	570
-ambulatory	3448	1.19	0	385
-wellness	773	0.93	0	299
+inpatient	1135	36.84	1440	495000
+ambulatory	12537	9.48	15	2695800
+outpatient	6300	5.88	15	642240
+emergency	2322	1.54	60	35340
+urgentcare	3666	0.25	15	15
+wellness	1931	0.25	15	15
 duration_range	encounter_count	percentage
-< 1 hour	2710	35.07
-1-24 hours	4802	62.14
-1-3 days	103	1.33
-3-7 days	97	1.26
-7-14 days	14	0.18
-14-30 days	2	0.03
+< 1 hour	21539	77.23
+1-24 hours	6277	22.51
+1-3 days	31	0.11
+3-7 days	13	0.05
+7-14 days	14	0.05
+14-30 days	4	0.01
+> 30 days	13	0.05
 encounter_group	encounter_count	average_claim_cost	valid_duration_count	average_duration_hours
-Ambulatory / outpatient	6039	691.12	5988	1.34
-Emergency / urgent care	1532	3422.86	1520	4.67
-Inpatient	223	20758.10	220	86.01
+Ambulatory / outpatient	20768	2821.93	20768	7.53
+Emergency / urgent care	5988	5694.62	5988	0.75
+Inpatient	1135	7761.35	1135	36.84
 day_of_week	day_number	encounter_count	average_claim_cost
-Sunday	1	1102	1771.18
-Monday	2	1106	1702.34
-Tuesday	3	1148	1809.02
-Wednesday	4	1100	1916.38
-Thursday	5	1087	1837.10
-Friday	6	1104	1898.03
-Saturday	7	1147	1686.80
+Sunday	1	3973	2017.96
+Monday	2	4405	4398.30
+Tuesday	3	3644	4405.32
+Wednesday	4	4370	4575.51
+Thursday	5	3477	3346.62
+Friday	6	4059	3433.82
+Saturday	7	3963	3154.29
 month_name	month_number	encounter_count	average_claim_cost
-January	1	679	1874.47
-February	2	616	1766.53
-March	3	668	2058.74
-April	4	656	1689.57
-May	5	660	1772.09
-June	6	677	1698.01
-July	7	647	1522.57
-August	8	622	1850.42
-September	9	623	1862.61
-October	10	629	1766.85
-November	11	625	1712.81
-December	12	692	2029.67
+January	1	2217	3952.31
+February	2	3028	2978.70
+March	3	2688	3157.47
+April	4	2312	3476.37
+May	5	2374	3538.79
+June	6	2181	4001.86
+July	7	2182	3804.70
+August	8	2129	4164.49
+September	9	2113	3559.23
+October	10	2087	3904.28
+November	11	2333	3573.47
+December	12	2247	3963.02
 quarter_number	encounter_count	average_claim_cost
-1	1963	1903.31
-2	1993	1719.76
-3	1892	1742.32
-4	1946	1842.95
+1	7933	3311.36
+2	6867	3664.85
+3	6424	3843.20
+4	6667	3808.32
 hour_band	encounter_count
-00-03	1279
-04-07	1284
-08-11	1348
-12-15	1314
-16-19	1266
-20-23	1303
+00-03	4786
+04-07	5021
+08-11	4706
+12-15	4306
+16-19	4614
+20-23	4458
 payer_name	encounter_count	unique_patients	average_claim_cost	average_payer_coverage	weighted_coverage_rate_pct
-Dual Eligible	984	102	1823.46	1629.28	89.35
-NO_INSURANCE	831	104	1836.90	0.00	0.00
-Humana	826	119	1917.80	1294.80	67.51
-Anthem	817	132	1734.89	1239.01	71.42
-Cigna	773	110	1848.26	1279.84	69.25
-Blue Cross Blue Shield	747	110	1860.79	1386.45	74.51
-Aetna	721	124	1490.37	1051.79	70.57
-Medicare	691	132	1673.07	1310.82	78.35
-UnitedHealthcare	686	116	1810.89	1314.69	72.60
-Medicaid	680	124	2039.58	1705.51	83.62
-NULL	38	33	1203.26	725.13	60.26
+Medicare	11371	449	2167.55	1689.89	77.96
+NO_INSURANCE	8807	262	5593.20	0.00	0.00
+Medicaid	1443	113	6205.22	5833.66	94.01
+Humana	1084	219	3269.30	1.80	0.06
+Aetna	936	207	2767.05	1.90	0.07
+Blue Cross Blue Shield	925	216	3245.58	2242.70	69.10
+Dual Eligible	912	62	1696.19	1513.93	89.25
+UnitedHealthcare	900	206	2848.34	4.37	0.15
+Cigna Health	809	203	2996.95	1.20	0.04
+Anthem	704	204	4236.81	0.00	0.00
 total_encounters	average_base_cost	average_claim_cost	average_payer_coverage	weighted_coverage_rate_pct
-7794	1040.93	1802.22	1214.17	67.37
+27891	116.18	3639.68	1114.97	30.63
 encounter_class	encounter_count	average_base_cost	average_claim_cost	average_payer_coverage	average_uncovered_amount	weighted_coverage_rate_pct
-inpatient	223	11985.41	20758.10	14348.15	6409.95	69.12
-emergency	486	3494.69	6113.18	3890.05	2223.13	63.63
-urgentcare	1046	1266.34	2172.87	1485.01	687.86	68.34
-outpatient	1779	521.65	904.73	622.55	282.18	68.81
-ambulatory	3478	381.26	656.04	437.67	218.37	66.71
-wellness	782	208.68	361.14	242.99	118.15	67.28
+inpatient	1135	113.67	7761.35	3250.01	4511.34	41.87
+urgentcare	3666	142.58	6369.16	834.40	5534.76	13.10
+emergency	2322	145.25	4629.65	1398.29	3231.36	30.20
+wellness	1931	136.80	4260.71	2289.88	1970.83	53.74
+ambulatory	12537	105.73	2894.11	1029.23	1864.88	35.56
+outpatient	6300	105.04	2237.30	599.64	1637.65	26.80

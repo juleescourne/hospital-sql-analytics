@@ -27,11 +27,15 @@ def typed(row):
 def main(command):
     results = ROOT / 'results'
     results.mkdir(exist_ok=True)
-    data = {'source': 'Données synthétiques, graine 42, 400 patients demandés',
+    manifest = json.loads((ROOT / 'data/source/manifest.json').read_text())
+    data = {'source': 'Jeu public Maven Analytics — Hospital Patient Records / SyntheticMass (Synthea)',
+            'source_url': manifest['source_url'],
+            'source_archive_sha256': manifest['archive_sha256'],
+            'nature': manifest['nature'],
             'currency': 'USD',
             'query_file': 'queries/07_portfolio_summary.sql',
             'query_sha256': hashlib.sha256((ROOT / 'queries/07_portfolio_summary.sql').read_bytes()).hexdigest()}
-    for index, name in enumerate(['activity', 'coverage', 'quality', 'overview'], 1):
+    for index, name in enumerate(['activity', 'coverage', 'quality', 'overview', 'annual', 'sensitivity', 'financial_sensitivity'], 1):
         rows = run_query(command, query_section('07_portfolio_summary.sql', index))
         if not rows:
             raise ValueError('Résultat vide : ' + name)
@@ -46,13 +50,14 @@ def main(command):
     assert sum(r['encounter_count'] for r in data['activity']) == overview['encounters']
     assert sum(r['encounter_count'] for r in data['coverage']) == overview['encounters']
     assert sum(r['valid_duration_count'] for r in data['activity']) == overview['valid_durations']
+    assert sum(r['encounter_count'] for r in data['annual']) == overview['encounters']
     for rows in [data['activity'], data['coverage']]:
         assert abs(sum(r['total_claim_cost'] for r in rows) - overview['total_claim_cost']) < 0.02
     (results / 'portfolio.json').write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n')
     explain = results / 'explain.txt'
     if explain.exists():
         explain.write_text('\n'.join(line.rstrip() for line in explain.read_text().splitlines()).rstrip() + '\n')
-    print('Exports métier MySQL rapprochés : quatre CSV et portfolio.json.')
+    print('Exports métier MySQL rapprochés : sept CSV et portfolio.json.')
 
 
 if __name__ == '__main__':

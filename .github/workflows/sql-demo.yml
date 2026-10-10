@@ -1,4 +1,4 @@
-name: MySQL synthetic analysis
+name: MySQL public Maven analysis
 on: [push, pull_request]
 permissions:
   contents: read
@@ -21,7 +21,7 @@ jobs:
       - name: Execute the documented local MySQL workflow
         run: bash scripts/run_demo.sh --local
       - name: Compare published aggregates with recalculated results
-        run: git diff --exit-code -- results/portfolio.json results/activity.csv results/coverage.csv results/quality.csv results/overview.csv
+        run: git diff --exit-code -- results/portfolio.json results/activity.csv results/coverage.csv results/quality.csv results/overview.csv results/annual.csv results/sensitivity.csv results/financial_sensitivity.csv
       - uses: actions/upload-artifact@v4
         with:
           name: mysql-results

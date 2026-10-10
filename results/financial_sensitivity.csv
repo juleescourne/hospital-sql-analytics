@@ -1,0 +1,3 @@
+﻿scenario;encounter_count;total_claim_cost;covered_amount;weighted_coverage_pct
+all_recorded;27891;101514375.52;31097506.99;30.63
+without_lifetime_flags;27834;101257677.13;30966842.47;30.58

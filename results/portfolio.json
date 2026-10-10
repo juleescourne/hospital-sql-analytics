@@ -1,206 +1,376 @@
 {
-  "source": "Données synthétiques, graine 42, 400 patients demandés",
+  "source": "Jeu public Maven Analytics — Hospital Patient Records / SyntheticMass (Synthea)",
+  "source_url": "https://mavenanalytics.io/data-playground/hospital-patient-records",
+  "source_archive_sha256": "e4aa5c265552ef0ec8a82590be8a4137a91c0652ca298f3364569baee7673441",
+  "nature": "Données publiques synthétiques produites par Synthea, pas des dossiers de patients réels",
   "currency": "USD",
   "query_file": "queries/07_portfolio_summary.sql",
-  "query_sha256": "24eb45d1ad3942d9148536363187835fcc8ce4449b8ca4e29f010709f7fc2a63",
+  "query_sha256": "607db02f940b63162b2d7c537ec5a85b539c61e37d7dd14ff5066b8e560711df",
   "activity": [
     {
       "encounter_class": "ambulatory",
-      "encounter_count": 3478,
-      "volume_share_pct": 44.62,
-      "total_claim_cost": 2281717.05,
-      "cost_share_pct": 16.24,
-      "valid_duration_count": 3448,
-      "average_hours": 1.19,
-      "median_hours": 0.99
+      "encounter_count": 12537,
+      "volume_share_pct": 44.95,
+      "total_claim_cost": 36283440.84,
+      "cost_share_pct": 35.74,
+      "valid_duration_count": 12537,
+      "average_hours": 9.48,
+      "median_hours": 0.25,
+      "maximum_hours": 44930.0,
+      "duration_over_24h_count": 5
     },
     {
       "encounter_class": "outpatient",
-      "encounter_count": 1779,
-      "volume_share_pct": 22.83,
-      "total_claim_cost": 1609520.55,
-      "cost_share_pct": 11.46,
-      "valid_duration_count": 1767,
-      "average_hours": 1.83,
-      "median_hours": 1.54
+      "encounter_count": 6300,
+      "volume_share_pct": 22.59,
+      "total_claim_cost": 14094967.12,
+      "cost_share_pct": 13.88,
+      "valid_duration_count": 6300,
+      "average_hours": 5.88,
+      "median_hours": 0.25,
+      "maximum_hours": 10704.0,
+      "duration_over_24h_count": 7
     },
     {
       "encounter_class": "urgentcare",
-      "encounter_count": 1046,
-      "volume_share_pct": 13.42,
-      "total_claim_cost": 2272822.85,
-      "cost_share_pct": 16.18,
-      "valid_duration_count": 1036,
-      "average_hours": 3.49,
-      "median_hours": 2.93
-    },
-    {
-      "encounter_class": "wellness",
-      "encounter_count": 782,
-      "volume_share_pct": 10.03,
-      "total_claim_cost": 282409.7,
-      "cost_share_pct": 2.01,
-      "valid_duration_count": 773,
-      "average_hours": 0.93,
-      "median_hours": 0.76
+      "encounter_count": 3666,
+      "volume_share_pct": 13.14,
+      "total_claim_cost": 23349349.96,
+      "cost_share_pct": 23.0,
+      "valid_duration_count": 3666,
+      "average_hours": 0.25,
+      "median_hours": 0.25,
+      "maximum_hours": 0.25,
+      "duration_over_24h_count": 0
     },
     {
       "encounter_class": "emergency",
-      "encounter_count": 486,
-      "volume_share_pct": 6.24,
-      "total_claim_cost": 2971004.39,
-      "cost_share_pct": 21.15,
-      "valid_duration_count": 484,
-      "average_hours": 7.19,
-      "median_hours": 6.11
+      "encounter_count": 2322,
+      "volume_share_pct": 8.33,
+      "total_claim_cost": 10750051.53,
+      "cost_share_pct": 10.59,
+      "valid_duration_count": 2322,
+      "average_hours": 1.54,
+      "median_hours": 1.0,
+      "maximum_hours": 589.0,
+      "duration_over_24h_count": 5
+    },
+    {
+      "encounter_class": "wellness",
+      "encounter_count": 1931,
+      "volume_share_pct": 6.92,
+      "total_claim_cost": 8227431.73,
+      "cost_share_pct": 8.1,
+      "valid_duration_count": 1931,
+      "average_hours": 0.25,
+      "median_hours": 0.25,
+      "maximum_hours": 0.25,
+      "duration_over_24h_count": 0
     },
     {
       "encounter_class": "inpatient",
-      "encounter_count": 223,
-      "volume_share_pct": 2.86,
-      "total_claim_cost": 4629056.33,
-      "cost_share_pct": 32.96,
-      "valid_duration_count": 220,
-      "average_hours": 86.01,
-      "median_hours": 75.58
+      "encounter_count": 1135,
+      "volume_share_pct": 4.07,
+      "total_claim_cost": 8809134.34,
+      "cost_share_pct": 8.68,
+      "valid_duration_count": 1135,
+      "average_hours": 36.84,
+      "median_hours": 24.0,
+      "maximum_hours": 8250.0,
+      "duration_over_24h_count": 58
     }
   ],
   "coverage": [
     {
-      "payer_name": "Dual Eligible",
-      "encounter_count": 984,
-      "total_claim_cost": 1794280.13,
-      "covered_amount": 1603214.53,
-      "uncovered_amount": 191065.6,
-      "weighted_coverage_pct": 89.35
+      "payer_name": "Medicare",
+      "encounter_count": 11371,
+      "total_claim_cost": 24647228.89,
+      "covered_amount": 19215691.37,
+      "uncovered_amount": 5431537.52,
+      "weighted_coverage_pct": 77.96
     },
     {
       "payer_name": "NO_INSURANCE",
-      "encounter_count": 831,
-      "total_claim_cost": 1526467.32,
+      "encounter_count": 8807,
+      "total_claim_cost": 49259290.16,
       "covered_amount": 0.0,
-      "uncovered_amount": 1526467.32,
+      "uncovered_amount": 49259290.16,
       "weighted_coverage_pct": 0.0
     },
     {
+      "payer_name": "Medicaid",
+      "encounter_count": 1443,
+      "total_claim_cost": 8954131.02,
+      "covered_amount": 8417973.72,
+      "uncovered_amount": 536157.3,
+      "weighted_coverage_pct": 94.01
+    },
+    {
       "payer_name": "Humana",
-      "encounter_count": 826,
-      "total_claim_cost": 1584102.84,
-      "covered_amount": 1069505.26,
-      "uncovered_amount": 514597.58,
-      "weighted_coverage_pct": 67.51
-    },
-    {
-      "payer_name": "Anthem",
-      "encounter_count": 817,
-      "total_claim_cost": 1417402.93,
-      "covered_amount": 1012270.26,
-      "uncovered_amount": 405132.67,
-      "weighted_coverage_pct": 71.42
-    },
-    {
-      "payer_name": "Cigna",
-      "encounter_count": 773,
-      "total_claim_cost": 1428707.78,
-      "covered_amount": 989316.07,
-      "uncovered_amount": 439391.71,
-      "weighted_coverage_pct": 69.25
-    },
-    {
-      "payer_name": "Blue Cross Blue Shield",
-      "encounter_count": 747,
-      "total_claim_cost": 1390010.67,
-      "covered_amount": 1035677.12,
-      "uncovered_amount": 354333.55,
-      "weighted_coverage_pct": 74.51
+      "encounter_count": 1084,
+      "total_claim_cost": 3543921.36,
+      "covered_amount": 1953.86,
+      "uncovered_amount": 3541967.5,
+      "weighted_coverage_pct": 0.06
     },
     {
       "payer_name": "Aetna",
-      "encounter_count": 721,
-      "total_claim_cost": 1074555.53,
-      "covered_amount": 758337.9,
-      "uncovered_amount": 316217.63,
-      "weighted_coverage_pct": 70.57
+      "encounter_count": 936,
+      "total_claim_cost": 2589956.1,
+      "covered_amount": 1780.16,
+      "uncovered_amount": 2588175.94,
+      "weighted_coverage_pct": 0.07
     },
     {
-      "payer_name": "Medicare",
-      "encounter_count": 691,
-      "total_claim_cost": 1156093.86,
-      "covered_amount": 905779.55,
-      "uncovered_amount": 250314.31,
-      "weighted_coverage_pct": 78.35
+      "payer_name": "Blue Cross Blue Shield",
+      "encounter_count": 925,
+      "total_claim_cost": 3002166.01,
+      "covered_amount": 2074496.34,
+      "uncovered_amount": 927669.67,
+      "weighted_coverage_pct": 69.1
+    },
+    {
+      "payer_name": "Dual Eligible",
+      "encounter_count": 912,
+      "total_claim_cost": 1546925.99,
+      "covered_amount": 1380705.87,
+      "uncovered_amount": 166220.12,
+      "weighted_coverage_pct": 89.25
     },
     {
       "payer_name": "UnitedHealthcare",
-      "encounter_count": 686,
-      "total_claim_cost": 1242272.83,
-      "covered_amount": 901879.79,
-      "uncovered_amount": 340393.04,
-      "weighted_coverage_pct": 72.6
+      "encounter_count": 900,
+      "total_claim_cost": 2563507.98,
+      "covered_amount": 3937.32,
+      "uncovered_amount": 2559570.66,
+      "weighted_coverage_pct": 0.15
     },
     {
-      "payer_name": "Medicaid",
-      "encounter_count": 680,
-      "total_claim_cost": 1386913.04,
-      "covered_amount": 1159743.78,
-      "uncovered_amount": 227169.26,
-      "weighted_coverage_pct": 83.62
+      "payer_name": "Cigna Health",
+      "encounter_count": 809,
+      "total_claim_cost": 2424532.96,
+      "covered_amount": 968.35,
+      "uncovered_amount": 2423564.61,
+      "weighted_coverage_pct": 0.04
     },
     {
-      "payer_name": "Payeur non renseigné",
-      "encounter_count": 38,
-      "total_claim_cost": 45723.94,
-      "covered_amount": 27554.86,
-      "uncovered_amount": 18169.08,
-      "weighted_coverage_pct": 60.26
+      "payer_name": "Anthem",
+      "encounter_count": 704,
+      "total_claim_cost": 2982715.05,
+      "covered_amount": 0.0,
+      "uncovered_amount": 2982715.05,
+      "weighted_coverage_pct": 0.0
     }
   ],
   "quality": [
     {
       "metric": "missing_stop",
-      "affected": 64,
-      "denominator": 7794
+      "affected": 0,
+      "denominator": 27891
     },
     {
       "metric": "negative_duration",
-      "affected": 2,
-      "denominator": 7794
+      "affected": 0,
+      "denominator": 27891
     },
     {
       "metric": "zero_duration",
-      "affected": 3,
-      "denominator": 7794
+      "affected": 0,
+      "denominator": 27891
     },
     {
       "metric": "missing_payer",
-      "affected": 38,
-      "denominator": 7794
+      "affected": 0,
+      "denominator": 27891
     },
     {
       "metric": "before_birth",
       "affected": 0,
-      "denominator": 7794
+      "denominator": 27891
     },
     {
       "metric": "after_death",
-      "affected": 0,
-      "denominator": 7794
+      "affected": 57,
+      "denominator": 27891
     },
     {
       "metric": "procedure_patient_mismatch",
       "affected": 0,
-      "denominator": 13839
+      "denominator": 47701
+    },
+    {
+      "metric": "ambulatory_outpatient_over_24h",
+      "affected": 12,
+      "denominator": 18837
     }
   ],
   "overview": {
-    "patients": 400,
-    "encounters": 7794,
-    "procedures": 13839,
-    "first_encounter": "2011-01-19 15:15:52",
-    "last_encounter": "2022-12-25 22:18:07",
-    "valid_durations": 7728,
-    "total_claim_cost": 14046530.87,
-    "covered_amount": 9463279.12,
-    "weighted_coverage_pct": 67.37
-  }
+    "patients": 974,
+    "encounters": 27891,
+    "procedures": 47701,
+    "first_encounter": "2011-01-02 09:26:36",
+    "last_encounter": "2022-02-05 20:27:36",
+    "valid_durations": 27891,
+    "total_claim_cost": 101514375.52,
+    "covered_amount": 31097506.99,
+    "weighted_coverage_pct": 30.63
+  },
+  "annual": [
+    {
+      "year": 2011,
+      "encounter_count": 1336,
+      "active_patients": 410,
+      "total_claim_cost": 4405936.73,
+      "first_start": "2011-01-02 09:26:36",
+      "last_start": "2011-12-31 20:24:17"
+    },
+    {
+      "year": 2012,
+      "encounter_count": 2106,
+      "active_patients": 559,
+      "total_claim_cost": 9058314.1,
+      "first_start": "2012-01-01 06:13:17",
+      "last_start": "2012-12-31 22:41:28"
+    },
+    {
+      "year": 2013,
+      "encounter_count": 2495,
+      "active_patients": 570,
+      "total_claim_cost": 10105272.87,
+      "first_start": "2013-01-01 03:23:34",
+      "last_start": "2013-12-31 13:31:10"
+    },
+    {
+      "year": 2014,
+      "encounter_count": 3885,
+      "active_patients": 630,
+      "total_claim_cost": 12011662.17,
+      "first_start": "2014-01-01 03:52:24",
+      "last_start": "2014-12-31 22:27:47"
+    },
+    {
+      "year": 2015,
+      "encounter_count": 2469,
+      "active_patients": 553,
+      "total_claim_cost": 10124652.89,
+      "first_start": "2015-01-01 00:38:38",
+      "last_start": "2015-12-31 23:55:15"
+    },
+    {
+      "year": 2016,
+      "encounter_count": 2451,
+      "active_patients": 552,
+      "total_claim_cost": 8386701.12,
+      "first_start": "2016-01-01 03:38:29",
+      "last_start": "2016-12-31 20:35:37"
+    },
+    {
+      "year": 2017,
+      "encounter_count": 2360,
+      "active_patients": 546,
+      "total_claim_cost": 9596894.47,
+      "first_start": "2017-01-01 02:07:02",
+      "last_start": "2017-12-31 23:47:12"
+    },
+    {
+      "year": 2018,
+      "encounter_count": 2292,
+      "active_patients": 535,
+      "total_claim_cost": 8746818.37,
+      "first_start": "2018-01-01 00:26:15",
+      "last_start": "2018-12-31 22:31:23"
+    },
+    {
+      "year": 2019,
+      "encounter_count": 2228,
+      "active_patients": 514,
+      "total_claim_cost": 8915338.78,
+      "first_start": "2019-01-01 05:17:51",
+      "last_start": "2019-12-31 13:21:51"
+    },
+    {
+      "year": 2020,
+      "encounter_count": 2519,
+      "active_patients": 519,
+      "total_claim_cost": 10294077.96,
+      "first_start": "2020-01-01 02:02:47",
+      "last_start": "2020-12-31 22:04:15"
+    },
+    {
+      "year": 2021,
+      "encounter_count": 3530,
+      "active_patients": 649,
+      "total_claim_cost": 9177232.0,
+      "first_start": "2021-01-01 02:37:31",
+      "last_start": "2021-12-31 21:00:58"
+    },
+    {
+      "year": 2022,
+      "encounter_count": 220,
+      "active_patients": 103,
+      "total_claim_cost": 691474.06,
+      "first_start": "2022-01-01 00:47:16",
+      "last_start": "2022-02-05 20:27:36"
+    }
+  ],
+  "sensitivity": [
+    {
+      "encounter_class": "ambulatory",
+      "scenario": "all_recorded",
+      "encounter_count": 12537,
+      "average_hours": 9.48,
+      "median_hours": 0.25
+    },
+    {
+      "encounter_class": "ambulatory",
+      "scenario": "without_lifetime_flags",
+      "encounter_count": 12537,
+      "average_hours": 9.48,
+      "median_hours": 0.25
+    },
+    {
+      "encounter_class": "ambulatory",
+      "scenario": "without_over_24h",
+      "encounter_count": 12532,
+      "average_hours": 0.92,
+      "median_hours": 0.25
+    },
+    {
+      "encounter_class": "outpatient",
+      "scenario": "all_recorded",
+      "encounter_count": 6300,
+      "average_hours": 5.88,
+      "median_hours": 0.25
+    },
+    {
+      "encounter_class": "outpatient",
+      "scenario": "without_lifetime_flags",
+      "encounter_count": 6300,
+      "average_hours": 5.88,
+      "median_hours": 0.25
+    },
+    {
+      "encounter_class": "outpatient",
+      "scenario": "without_over_24h",
+      "encounter_count": 6293,
+      "average_hours": 0.28,
+      "median_hours": 0.25
+    }
+  ],
+  "financial_sensitivity": [
+    {
+      "scenario": "all_recorded",
+      "encounter_count": 27891,
+      "total_claim_cost": 101514375.52,
+      "covered_amount": 31097506.99,
+      "weighted_coverage_pct": 30.63
+    },
+    {
+      "scenario": "without_lifetime_flags",
+      "encounter_count": 27834,
+      "total_claim_cost": 101257677.13,
+      "covered_amount": 30966842.47,
+      "weighted_coverage_pct": 30.58
+    }
+  ]
 }

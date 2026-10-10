@@ -1,0 +1,43 @@
+{
+  "dataset": "Hospital Patient Records — Maven Analytics / SyntheticMass",
+  "source_url": "https://mavenanalytics.io/data-playground/hospital-patient-records",
+  "license": "Public Domain (indication Maven Analytics)",
+  "nature": "Données publiques synthétiques produites par Synthea, pas des dossiers de patients réels",
+  "files": {
+    "organizations.csv": {
+      "sha256": "ae0fa75e376ffe5d17ce2bc1a93cad56f018d7f5d87bd99c7dfc8fab000894f1",
+      "bytes": 163,
+      "rows": 1
+    },
+    "payers.csv": {
+      "sha256": "5372d310052102d3d9294afb84c1dd4269cf45e8058b258b0f960834fa607803",
+      "bytes": 1030,
+      "rows": 10
+    },
+    "patients.csv": {
+      "sha256": "2c1b2c1cb6310294b25d4ac6649f7b35783b91aa22f084be6a8f1b30460cf97b",
+      "bytes": 221122,
+      "rows": 974
+    },
+    "encounters.csv": {
+      "sha256": "4eee279b9964a06bf8cfe7a07429a1db582a864c3486db71985d7f3ce3e04b64",
+      "bytes": 7647591,
+      "rows": 27891
+    },
+    "procedures.csv": {
+      "sha256": "40fd6f9b0967c81e8c107637f49342026467f2d8c16c4114f7f6edd448296836",
+      "bytes": 8712632,
+      "rows": 47701
+    },
+    "data_dictionary.csv": {
+      "sha256": "9eb8aa2aa67c0113d90d920f7ae28816e7623a40bb77522129dad643a9833b02",
+      "bytes": 4067,
+      "rows": 65
+    },
+    "citation.txt": {
+      "sha256": "ce999b38eefe9dc2925b282a40c895ea7488404cdc25e61ae3beee620cfa8cf1",
+      "bytes": 432
+    }
+  },
+  "archive_sha256": "e4aa5c265552ef0ec8a82590be8a4137a91c0652ca298f3364569baee7673441"
+}

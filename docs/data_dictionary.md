@@ -34,7 +34,7 @@ Attributs démographiques, une ligne par patient.
 | --- | --- | --- | --- |
 | `Id` | `CHAR(36)` | clé primaire | identifiant du patient (UUID) |
 | `BIRTHDATE` | `DATE` | | date de naissance |
-| `DEATHDATE` | `DATE` | nullable | date de décès, `NULL` si le patient est vivant |
+| `DEATHDATE` | `DATE` | nullable | date de décès renseignée, `NULL` si absente |
 | `PREFIX`, `FIRST`, `LAST`, `SUFFIX`, `MAIDEN` | `VARCHAR` | | état civil |
 | `MARITAL` | `VARCHAR(10)` | | situation maritale |
 | `RACE`, `ETHNICITY`, `GENDER` | `VARCHAR` | | champs démographiques |
@@ -63,12 +63,11 @@ Une ligne par rencontre enregistrée.
 | `ENCOUNTERCLASS` | `VARCHAR(50)` | | `ambulatory`, `outpatient`, `emergency`, `inpatient`, `wellness`, `urgentcare` |
 | `CODE`, `DESCRIPTION` | `VARCHAR` | | nature de la rencontre |
 | `BASE_ENCOUNTER_COST` | `DECIMAL(14,2)` | | coût de base |
-| `TOTAL_CLAIM_COST` | `DECIMAL(14,2)` | | montant total facturé |
+| `TOTAL_CLAIM_COST` | `DECIMAL(14,2)` | | montant total du passage selon le fichier (non preuve de facturation encaissée) |
 | `PAYER_COVERAGE` | `DECIMAL(14,2)` | | part prise en charge par le payeur |
 | `REASONCODE`, `REASONDESCRIPTION` | `VARCHAR` | nullable | motif, quand il est renseigné |
 
-Le **reste à charge** se calcule par `TOTAL_CLAIM_COST - PAYER_COVERAGE`. Il n'est pas
-stocké : le dériver évite qu'il diverge des deux colonnes dont il dépend.
+Le **montant non couvert dans le fichier** se calcule par `TOTAL_CLAIM_COST - PAYER_COVERAGE`. Il ne démontre pas un reste à charge patient, une perte ou une marge.
 
 ---
 
@@ -105,8 +104,7 @@ Référentiel des organismes payeurs.
 | `ADDRESS`, `CITY`, `ZIP`, `PHONE` | `VARCHAR` | | coordonnées |
 | `STATE_HEADQUARTERED` | `CHAR(2)` | | état du siège social |
 
-`PAYER` est nullable dans `encounters` : une rencontre sans payeur correspond à un patient
-non couvert. Toute jointure vers `payers` doit donc être un `LEFT JOIN`, sinon ces
+`PAYER` est nullable dans `encounters` : une rencontre sans identifiant de payeur ne permet pas de conclure à une absence de couverture. La catégorie renseignée `NO_INSURANCE` est distincte. Toute jointure vers `payers` doit donc être un `LEFT JOIN`, sinon ces
 rencontres disparaissent silencieusement des agrégats.
 
 ---
@@ -136,3 +134,5 @@ Référentiel des établissements de santé.
 
 L'index composite `(PATIENT, START)` est celui qui compte : les requêtes de cohorte et de
 fenêtrage partitionnent par patient puis ordonnent par date, exactement dans cet ordre.
+
+Les horodatages sont conservés en UTC. Les coordonnées LAT/LON de `organizations` sont des DOUBLE, comme dans `patients`. Les durées dites valides dans les exports satisfont seulement STOP >= START : les incohérences avec la date de décès sont signalées séparément.

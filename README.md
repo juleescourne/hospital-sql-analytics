@@ -1,30 +1,33 @@
-# Hospital SQL Analytics — activité, montants et qualité
+# Hospital SQL Analytics — jeu public Maven / Massachusetts
 
 **Projet personnel de Data Analyst junior — Jules Courné**
-MySQL 8 · SQL analytique · Python · Contrôles qualité
 
-Comment lire l’activité d’un établissement, les montants associés et leur couverture sans mélanger les indicateurs ? Cette étude répond à trois questions avec des requêtes SQL explicites et des résultats consultables.
+MySQL 8 · SQL analytique · Python · Qualité des données
 
-**[Explorer les trois analyses dans le portfolio](https://juleescourne.github.io/portfolio-data-analyst/#/hospital)** · **[Lire les résultats](results/README.md)** · **[Voir les requêtes de synthèse](queries/07_portfolio_summary.sql)**
+**Quels passages concentrent l’activité et les montants, et quels contrôles faut-il effectuer avant de restituer ces indicateurs ?**
 
-Les données sont **entièrement synthétiques** : 400 patients, 7 794 passages et 13 839 actes, avec une graine fixe. Les règles du générateur déterminent les distributions ; les résultats ne décrivent pas un établissement réel.
+L’analyse utilise les fichiers publics [Hospital Patient Records de Maven Analytics](https://mavenanalytics.io/data-playground/hospital-patient-records) : **974 patients, 27 891 passages et 47 701 actes**. Maven indique une origine **SyntheticMass / Synthea** et une licence **Public Domain**. Ces données sont synthétiques : elles ne décrivent pas des patients réels ni les performances réelles du Massachusetts General Hospital.
 
-## Trois questions, trois lectures
+**[Explorer la démo](https://juleescourne.github.io/portfolio-data-analyst/#/hospital)** · **[Lire l’analyse](results/README.md)** · **[Requêtes de synthèse](queries/07_portfolio_summary.sql)** · **[Provenance et empreintes](data/source/manifest.json)**
 
-| Question | Résultat du jeu de démonstration | Lecture |
+## Trois résultats à retenir
+
+| Question | Résultat vérifié dans MySQL | Lecture |
 | --- | --- | --- |
-| Quels passages concentrent les volumes et les durées ? | Ambulatoire : 44,62 % des passages. Hospitalisation : 2,86 %, avec une durée médiane de 75,58 h. | Distinguer le nombre de passages de leur durée ; celle-ci ne mesure pas le travail soignant. |
-| Quelle part des montants est couverte par les payeurs ? | 67,37 %, calculés comme somme des couvertures / somme des montants. | Les volumes et le profil des passages comptent ; ce taux ne classe pas la qualité des assureurs. |
-| Quelles anomalies limitent la lecture ? | 64 fins manquantes, 2 durées négatives et 38 payeurs non renseignés. | Durées calculées sur 7 728 passages ; montants sur 7 794. Les anomalies ne sont pas remplacées par zéro. |
+| Où se concentre l’activité ? | L’ambulatoire représente 44,95 % des passages et 35,74 % des montants. | Distinguer volumes, durées et montants ; un passage n’est pas nécessairement une hospitalisation. |
+| Quelle part des montants est couverte ? | 31,10 M USD sur 101,51 M USD, soit **30,63 %**. | Calculer le rapport des sommes ; ne pas additionner coûts des actes et montants des passages. |
+| La moyenne des durées est-elle représentative ? | Ambulatoire : moyenne **9,48 h**, médiane **0,25 h**. Sans les 5 passages de plus de 24 h, moyenne **0,92 h**. | Examiner les valeurs extrêmes avant d’utiliser la moyenne ; le seuil de 24 h est un diagnostic, pas une règle clinique. |
+
+Les contrôles détectent aussi **57 passages avec un début ou une fin après décès** (53 commencent après décès). En les excluant dans un scénario séparé, la couverture passe de 30,63 % à **30,58 %**. Les données source restent intactes. La période finit le **5 février 2022** : 2022 n’est pas comparable à une année complète.
 
 ## Ce que j’ai réalisé
 
-- Modélisation de cinq tables avec clés étrangères, types `DECIMAL` pour les montants et index.
-- Contrôles de complétude, dates, doublons et cohérence entre actes, passages et patients.
-- Jointures, CTE et fonctions fenêtres : `LEAD`, `LAG`, `ROW_NUMBER`, `DENSE_RANK`, `NTILE`, cumuls et moyennes mobiles.
-- Calcul d’une médiane par classement, d’un taux de couverture pondéré et de cohortes d’activité.
-- Quatre tests Python et sept groupes de tests MySQL sur des cas dont les résultats sont connus.
-- Restitution des résultats avec leurs dénominateurs, leur interprétation et les vérifications à poursuivre.
+- Préparation des CSV, vérification de leurs empreintes et chargement de cinq tables relationnelles.
+- Conversion explicite des dates UTC et rapprochement des cinq volumes et de trois sommes financières entre CSV et MySQL.
+- Contrôles des clés, doublons, dates, montants et cohérence patient–passage–acte.
+- Jointures, agrégations, CTE et fonctions fenêtres ; moyenne, médiane, couverture pondérée et sensibilité aux anomalies.
+- Restitution de trois analyses avec graphiques interactifs, constats, limites et suites proposées.
+- Huit groupes de tests SQL sur des cas connus ; GitHub Actions recalcule les agrégats publiés.
 
 ## Reproduire
 
@@ -36,43 +39,36 @@ cd hospital-sql-analytics
 bash scripts/run_demo.sh
 ```
 
-Cette commande recrée la base **réservée à la démonstration** `hospital_analytics`, génère et charge les données, exécute les tests puis les sept fichiers SQL. Ne pas utiliser cette base pour conserver d’autres données. Les tests SQL utilisent une transaction annulée et n’altèrent pas les résultats de démonstration.
+Le script recrée la base **dédiée** `hospital_analytics`, vérifie les calculs puis importe l’archive publique incluse dans `data/source/`. Aucun compte Maven n’est nécessaire pour reproduire cette version. Les fichiers d’origine sont conservés, avec dictionnaire et citation Synthea ; leur archive est un conditionnement local documenté, pas l’archive de téléchargement officielle.
 
-Pour un serveur MySQL 8 existant : `bash scripts/run_demo.sh --local`. Les variables de connexion sont décrites dans [INSTALLATION.md](INSTALLATION.md). GitHub Actions exécute le mode local sur le serveur MySQL 8 du runner Ubuntu : [workflow](.github/workflows/sql-demo.yml).
+Sur un serveur MySQL 8 existant : `bash scripts/run_demo.sh --local`. Les paramètres sont décrits dans [INSTALLATION.md](INSTALLATION.md). Ne pas stocker d’autres données dans cette base, car elle est recréée.
 
-Pour vérifier seulement le générateur, sans base ni dépendance Python supplémentaire :
-
-```bash
-python3 -m unittest discover -s tests -v
-```
-
-## Parcourir les fichiers
+## Parcourir le projet
 
 | Fichier | Rôle |
 | --- | --- |
-| [05 — qualité](queries/05_data_quality_checks.sql) | Contrôles à exécuter avant l’analyse |
-| [01 — exploration](queries/01_data_exploration.sql) | Volumes, dates, répartition des classes |
+| [Préparation Maven](scripts/prepare_maven.py) | Empreintes, relations, dates UTC et chargeur |
+| [Rapprochement de l’import](scripts/check_source_import.py) | Volumes et montants comparés aux CSV |
+| [05 — qualité](queries/05_data_quality_checks.sql) | Contrôles avant interprétation |
+| [01 — exploration](queries/01_data_exploration.sql) | Volumes, période et classes |
 | [02 — patients](queries/02_patient_analytics.sql) | Profils et activité enregistrée |
-| [03 — passages](queries/03_encounter_analytics.sql) | Durées, retours, montants et couverture |
-| [04 — actes](queries/04_procedure_financial_analytics.sql) | Fréquence et concentration des coûts des actes |
-| [06 — fonctions fenêtres](queries/06_window_functions_cohorts.sql) | Classements, calendrier mensuel et cohortes |
-| [07 — synthèse métier](queries/07_portfolio_summary.sql) | Trois tableaux et un bilan pour le portfolio |
-| [Résultats et interprétations](results/README.md) | Sorties MySQL, CSV et limites |
-| [Tests SQL](scripts/check_sql.py) | Vérification des vraies requêtes sur de petits cas |
-| [Dictionnaire](docs/data_dictionary.md) | Grain, colonnes et règles des indicateurs |
+| [03 — passages](queries/03_encounter_analytics.sql) | Durées, retours et couverture |
+| [04 — actes](queries/04_procedure_financial_analytics.sql) | Fréquence et coûts des actes |
+| [06 — fenêtres](queries/06_window_functions_cohorts.sql) | Classements, calendrier, cohortes |
+| [07 — restitution](queries/07_portfolio_summary.sql) | Sept tableaux de synthèse et de sensibilité |
+| [Résultats commentés](results/README.md) | Constats, interprétations et limites |
+| [Tests SQL](scripts/check_sql.py) | Cas simples et résultats attendus |
 
 ## Trois choix à expliquer en entretien
 
-**Calculer le passage suivant avant de filtrer.** Un passage sans date de fin possède tout de même une date de début. Il reste dans la chronologie de `LEAD` et `LAG`. Le retour est ensuite retenu entre la fin valide du passage précédent et exactement 30 × 24 heures plus tard, bornes incluses. Ce comptage n’est pas un taux clinique de réadmission.
+**Contrôler avant de supprimer.** Les durées sont calculables sur les 27 891 passages, mais cela ne prouve pas leur cohérence métier. Les passages après décès et les durées longues sont signalés, puis étudiés séparément. Le tableau principal décrit le fichier tel qu’il est enregistré.
 
-**Pondérer la couverture par les montants.** `SUM(PAYER_COVERAGE) / SUM(TOTAL_CLAIM_COST)` mesure la part du montant total couverte. La moyenne des ratios répondrait à une autre question en donnant le même poids à chaque passage.
+**Pondérer la couverture.** `SUM(PAYER_COVERAGE) / SUM(TOTAL_CLAIM_COST)` mesure une part du montant total. Une moyenne de ratios donnerait un poids identique à chaque passage. Le champ `NO_INSURANCE` est renseigné : il ne s’agit pas d’un payeur manquant.
 
-**Distinguer un zéro d’une période non observée.** Le calendrier mensuel inclut les mois sans passage dans la fenêtre du fichier. Les cohortes affichent les années sans activité à zéro, mais pas les années futures. La dernière année peut être partielle : les cohortes ne prouvent ni fidélité ni qualité des soins.
+**Ne pas surinterpréter une chronologie.** `LEAD` est calculé avant le filtrage des fins manquantes pour retrouver le passage suivant. Un retour dans les 30 jours reste exploratoire : les fichiers ne permettent pas de construire un taux clinique de réadmission validé.
 
-## Limites
+## Périmètre et limites
 
-Les paramètres sont pédagogiques, sans calibration clinique. Les montants des actes et des passages sont analysés séparément et ne sont pas additionnés. Un montant non couvert ne prouve pas une dette du patient, une perte ou une marge. Les distributions par âge ou groupe démographique n’autorisent aucune conclusion clinique.
+Les montants sont ceux du fichier, en USD. Un montant non couvert ne prouve pas un reste à charge patient, une perte ou une marge. La couverture par payeur dépend de la simulation et du type de passages ; elle ne classe pas des assureurs réels. Les heures entre `START` et `STOP` ne mesurent pas le travail soignant.
 
-L’index apparaît dans le [plan d’exécution](results/explain.txt), suivi d’un tri. Aucun gain de performance n’est annoncé sans mesure comparative.
-
-Le jeu Maven Analytics d’origine n’est pas redistribué ; les résultats publiés proviennent du générateur synthétique du dépôt. Code sous [licence MIT](LICENSE).
+Le générateur pédagogique du dépôt est conservé uniquement comme outil de test ; **il ne produit plus les résultats publiés**. Les anciens chiffres de 400 patients et 7 794 passages sont remplacés par l’analyse Maven. Code sous [licence MIT](LICENSE), données publiques selon la [source Maven](data/source/README.md).

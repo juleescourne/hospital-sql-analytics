@@ -1,77 +1,84 @@
 gender	age_group	patient_count
-F	0-17	28
-F	18-29	36
-F	30-39	28
-F	40-49	17
-F	50-59	21
-F	60-69	21
-F	70-79	22
-F	80+	18
-M	0-17	35
-M	18-29	36
-M	30-39	24
-M	40-49	19
-M	50-59	32
-M	60-69	21
-M	70-79	21
-M	80+	21
+F	30-39	49
+F	40-49	68
+F	50-59	54
+F	60-69	73
+F	70-79	66
+F	80+	170
+M	18-29	2
+M	30-39	47
+M	40-49	58
+M	50-59	63
+M	60-69	57
+M	70-79	53
+M	80+	214
 ethnicity	patient_count	percentage
-hispanic	212	53.00
-nonhispanic	188	47.00
+nonhispanic	783	80.39
+hispanic	191	19.61
 race	gender	patient_count
-asian	F	42
-asian	M	41
-black	F	37
-black	M	39
-native	F	32
-native	M	42
-other	F	34
-other	M	40
-white	F	46
-white	M	47
+asian	F	41
+asian	M	50
+black	F	71
+black	M	92
+hawaiian	F	7
+hawaiian	M	6
+native	F	6
+native	M	5
+other	F	9
+other	M	7
+white	F	346
+white	M	334
 total_patients	patients_with_death_date	share_with_death_date_pct
-400	39	9.75
+974	154	15.81
 average_age_at_death	minimum_age_at_death	maximum_age_at_death
-50.67	4	90
+79.39	26	97
 city	state	patient_count
-Quincy	Massachusetts	77
-Lowell	Massachusetts	74
-Springfield	Massachusetts	72
-Boston	Massachusetts	60
-Cambridge	Massachusetts	59
-Worcester	Massachusetts	58
+Boston	Massachusetts	541
+Quincy	Massachusetts	80
+Cambridge	Massachusetts	45
+Revere	Massachusetts	42
+Chelsea	Massachusetts	39
+Weymouth	Massachusetts	37
+Somerville	Massachusetts	25
+Winthrop	Massachusetts	22
+Hingham	Massachusetts	22
+Brookline	Massachusetts	17
+Everett	Massachusetts	16
+Hull	Massachusetts	15
+Medford	Massachusetts	13
+Braintree	Massachusetts	10
+Cohasset	Massachusetts	10
 county	state	patient_count
-Quincy County	Massachusetts	77
-Lowell County	Massachusetts	74
-Springfield County	Massachusetts	72
-Boston County	Massachusetts	60
-Cambridge County	Massachusetts	59
-Worcester County	Massachusetts	58
+Suffolk County	Massachusetts	644
+Norfolk County	Massachusetts	155
+Middlesex County	Massachusetts	125
+Plymouth County	Massachusetts	49
+Essex County	Massachusetts	1
 patient_id	age	encounter_count	first_encounter	last_encounter	months_between_first_and_last
-02e0f81e-08d6-44fc-92a3-231885fd5560	32	95	2011-03-12	2022-12-21	141
-bc95bdd7-dad1-4590-ab0a-ec6286d0a34c	85	94	2011-11-17	2022-07-13	127
-4bf32f9e-5569-4fd9-951b-7d7983881273	30	91	2011-08-05	2022-09-22	133
-0faea29a-04a5-464c-bd7f-c8e64086d68b	72	89	2011-10-31	2022-12-20	133
-52e974df-1b26-4711-bd7d-a5c98cda93b0	36	86	2011-09-17	2021-09-02	119
-8e3c62bf-bc9e-4acd-b60f-fe09c936d60a	55	86	2011-11-22	2020-08-23	105
-0a8e1a0a-4d6a-4c85-be4a-9853576f6394	66	85	2011-04-14	2022-12-25	140
-14088f65-7284-473d-9cbe-74b1e878d8c0	39	85	2012-10-10	2022-12-25	122
-55cc5c7c-28cc-42f8-9824-4984a65d60e4	35	82	2013-01-26	2022-12-19	118
-a9fe494e-304c-4b39-b6ab-eff0cd1d19da	54	82	2011-05-29	2022-01-23	127
-4252cfa1-386c-490a-a448-400a00feef23	84	82	2013-05-25	2022-11-30	114
-e72fa7e9-e30c-40fd-8349-c174ab0be280	76	77	2013-03-06	2022-03-21	108
-3fcb7678-f20e-48c1-aa25-eba2be74ff4e	15	76	2012-06-16	2022-12-16	125
-1a8193be-2f5e-4ff6-97bf-1e81dfef2eb6	92	75	2011-11-26	2022-10-29	131
-98bdd2b8-6908-4ea0-a7f9-2e136a5bd0d0	21	72	2011-07-06	2018-08-11	85
+1712d26d-822d-1e3a-2267-0a9dba31d7c8	92	1381	2011-01-15	2022-01-23	132
+5e055638-0dad-dfd5-005d-1e74b6fd29ac	88	887	2011-02-19	2022-01-22	131
+3de74169-7f67-9304-91d4-757e0f3a14d2	88	877	2011-01-02	2017-02-11	73
+3f523789-55f3-bb31-2757-4803ca6a9c2a	87	447	2011-03-16	2022-01-26	130
+5dcb295d-92df-a147-ebcc-aa49b6262830	91	441	2011-03-09	2022-01-21	130
+442dc617-c7f2-0513-15cd-c35c4efdba73	98	392	2011-01-26	2022-01-19	131
+b4ab9ab3-f52a-751e-a990-3bd5654d5870	86	383	2011-01-26	2022-01-26	132
+9b8ae606-5059-b3a6-19c7-c812901898bb	94	364	2011-01-16	2022-01-21	132
+b4671e80-7e87-9260-ca31-6a9397d465d1	96	296	2011-02-28	2022-01-24	130
+ff331e5c-ab16-e218-f39a-63e11de1ed75	94	291	2011-01-10	2022-01-10	132
+381e16cd-86c8-d369-cd76-2dd9e0b5faf5	82	268	2011-01-20	2022-01-27	132
+b17ffd11-c8c2-28aa-0c26-8ddc6bc5957d	95	246	2011-04-20	2022-01-29	129
+dabb67a9-bc4b-bc40-696e-65546a548d39	87	239	2011-08-01	2016-04-25	56
+a31f5105-476f-b129-fb9a-514cf45a34ac	96	232	2011-04-20	2022-01-26	129
+df607b64-3d5e-5795-1646-edd2ccf55192	94	217	2012-03-04	2022-01-23	118
 encounter_range	patient_count
-1	2
-2-10	151
-11-20	111
-21-50	103
-51+	30
+1	120
+2-10	300
+11-20	200
+21-50	242
+51+	112
 average_encounters_per_patient	minimum_encounters	maximum_encounters
-19.63	1	95
+28.64	1	1381
 marital_status	patient_count	average_age	patients_with_death_date
-	136	42.51	10
-S	133	43.71	9
-M	131	47.85	20
+M	784	68.78	123
+S	189	67.86	30
+	1	26.00	1

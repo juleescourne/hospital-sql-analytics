@@ -1,7 +1,7 @@
-﻿encounter_class;encounter_count;volume_share_pct;total_claim_cost;cost_share_pct;valid_duration_count;average_hours;median_hours
-ambulatory;3478;44.62;2281717.05;16.24;3448;1.19;0.99
-outpatient;1779;22.83;1609520.55;11.46;1767;1.83;1.54
-urgentcare;1046;13.42;2272822.85;16.18;1036;3.49;2.93
-wellness;782;10.03;282409.70;2.01;773;0.93;0.76
-emergency;486;6.24;2971004.39;21.15;484;7.19;6.11
-inpatient;223;2.86;4629056.33;32.96;220;86.01;75.58
+﻿encounter_class;encounter_count;volume_share_pct;total_claim_cost;cost_share_pct;valid_duration_count;average_hours;median_hours;maximum_hours;duration_over_24h_count
+ambulatory;12537;44.95;36283440.84;35.74;12537;9.48;0.25;44930.00;5
+outpatient;6300;22.59;14094967.12;13.88;6300;5.88;0.25;10704.00;7
+urgentcare;3666;13.14;23349349.96;23.00;3666;0.25;0.25;0.25;0
+emergency;2322;8.33;10750051.53;10.59;2322;1.54;1.00;589.00;5
+wellness;1931;6.92;8227431.73;8.10;1931;0.25;0.25;0.25;0
+inpatient;1135;4.07;8809134.34;8.68;1135;36.84;24.00;8250.00;58

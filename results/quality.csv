@@ -1,8 +1,9 @@
 ﻿metric;affected;denominator
-missing_stop;64;7794
-negative_duration;2;7794
-zero_duration;3;7794
-missing_payer;38;7794
-before_birth;0;7794
-after_death;0;7794
-procedure_patient_mismatch;0;13839
+missing_stop;0;27891
+negative_duration;0;27891
+zero_duration;0;27891
+missing_payer;0;27891
+before_birth;0;27891
+after_death;57;27891
+procedure_patient_mismatch;0;47701
+ambulatory_outpatient_over_24h;12;18837

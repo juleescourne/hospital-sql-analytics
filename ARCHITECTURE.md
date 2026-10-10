@@ -20,11 +20,11 @@ erDiagram
     ENCOUNTERS ||--o{ PROCEDURES : contient
 ```
 
-| Table | Grain | Volume (jeu synthétique) |
+| Table | Grain | Volume (Maven / SyntheticMass) |
 | --- | --- | ---: |
-| `patients` | un patient | 400 |
-| `encounters` | un passage | 7 794 |
-| `procedures` | un acte réalisé pendant un passage | 13 839 |
+| `patients` | un patient | 974 |
+| `encounters` | un passage | 27 891 |
+| `procedures` | un acte réalisé pendant un passage | 47 701 |
 | `payers` | un organisme payeur | 10 |
 | `organizations` | un établissement | 1 |
 
@@ -157,15 +157,15 @@ synthétique, mais la pratique reste la bonne.
 
 ---
 
-## 5. Jeu de données synthétique
+## 5. Jeu public Maven / SyntheticMass
 
-Le générateur utilise une graine fixe et des règles pédagogiques : coûts par classe, couverture par payeur, distribution asymétrique du nombre de passages. Il n’est pas calibré pour représenter une population réelle.
+La source est documentée dans `data/source/README.md`. L’archive conserve les CSV fournis sans modification. `prepare_maven.py` vérifie les empreintes, les clés et relations, puis prépare les horodatages UTC. `check_source_import.py` rapproche les cinq effectifs et trois sommes financières après import.
 
-Les parcours commencent après la naissance et restent dans la fenêtre 2011–2022 ainsi que dans la vie du patient. Les défauts intentionnels sont ajoutés ensuite : 64 fins absentes, 2 durées négatives, 3 durées nulles et 38 payeurs absents pour la graine 42. Les coûts restent valides dans ce jeu.
+Les résultats actuels portent sur le jeu public Maven, distinct du générateur de test conservé dans le dépôt. Les 57 passages avec début ou fin après décès et les durées extrêmes sont conservés et signalés. Des scénarios mesurent leur influence sans modifier les données.
 
 ## 6. Vérification et limites
 
-Les résultats MySQL sont publiés dans `results/`. Quatre tests Python vérifient le générateur ; sept groupes de tests SQL vérifient les calculs avec des résultats attendus. Le parcours MySQL local est exécuté dans GitHub Actions sur le serveur MySQL 8 du runner Ubuntu. Les requêtes de cette évolution ont aussi été exécutées sur MySQL 8.0.46 dans un environnement temporaire isolé.
+Les résultats MySQL sont publiés dans `results/`. Quatre tests Python vérifient le générateur ; huit groupes de tests SQL vérifient les calculs avec des résultats attendus. Le parcours MySQL local est exécuté dans GitHub Actions sur le serveur MySQL 8 du runner Ubuntu. Les requêtes de cette évolution ont aussi été exécutées sur MySQL 8.0.46 dans un environnement temporaire isolé.
 
 Le plan `results/explain.txt` est produit après mise à jour des statistiques de table. Il décrit un parcours d’index puis un tri ; aucun gain de performance n’est mesuré. Les tables restent petites et le projet n’a pas vocation à démontrer une architecture de production.
 

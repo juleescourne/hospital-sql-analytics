@@ -1,49 +1,52 @@
 table_name	row_count
-procedures	13839
-encounters	7794
-patients	400
+procedures	47701
+encounters	27891
+patients	974
 payers	10
 organizations	1
 first_encounter	last_encounter	years_covered	months_covered
-2011-01-19 15:15:52	2022-12-25 22:18:07	11	143
+2011-01-02 09:26:36	2022-02-05 20:27:36	11	133
 gender	patient_count	percentage
-M	209	52.3
-F	191	47.8
+M	494	50.7
+F	480	49.3
 age_group	patient_count	average_age
-0-17	63	10.3
-18-29	72	23.8
-30-39	52	34.0
-40-49	36	44.5
-50-59	53	54.3
-60-69	42	64.2
-70-79	43	74.2
-80+	39	86.3
+18-29	2	27.5
+30-39	96	34.5
+40-49	126	44.6
+50-59	117	54.7
+60-69	130	64.8
+70-79	119	74.6
+80+	384	88.8
 city	state	patient_count
-Quincy	Massachusetts	77
-Lowell	Massachusetts	74
-Springfield	Massachusetts	72
-Boston	Massachusetts	60
-Cambridge	Massachusetts	59
-Worcester	Massachusetts	58
+Boston	Massachusetts	541
+Quincy	Massachusetts	80
+Cambridge	Massachusetts	45
+Revere	Massachusetts	42
+Chelsea	Massachusetts	39
+Weymouth	Massachusetts	37
+Somerville	Massachusetts	25
+Hingham	Massachusetts	22
+Winthrop	Massachusetts	22
+Brookline	Massachusetts	17
 encounter_class	encounter_count	share_pct	average_claim_cost
-ambulatory	3478	44.6	656.04
-outpatient	1779	22.8	904.73
-urgentcare	1046	13.4	2172.87
-wellness	782	10.0	361.14
-emergency	486	6.2	6113.18
-inpatient	223	2.9	20758.10
+ambulatory	12537	44.9	2894.11
+outpatient	6300	22.6	2237.30
+urgentcare	3666	13.1	6369.16
+emergency	2322	8.3	4629.65
+wellness	1931	6.9	4260.71
+inpatient	1135	4.1	7761.35
 year	encounter_count	unique_patients	encounters_per_patient
-2011	536	120	4.47
-2012	1299	249	5.22
-2013	1779	274	6.49
-2014	1126	178	6.33
-2015	839	132	6.36
-2016	599	94	6.37
-2017	393	63	6.24
-2018	357	46	7.76
-2019	299	45	6.64
-2020	236	34	6.94
-2021	182	28	6.50
-2022	149	19	7.84
+2011	1336	410	3.26
+2012	2106	559	3.77
+2013	2495	570	4.38
+2014	3885	630	6.17
+2015	2469	553	4.46
+2016	2451	552	4.44
+2017	2360	546	4.32
+2018	2292	535	4.28
+2019	2228	514	4.33
+2020	2519	519	4.85
+2021	3530	649	5.44
+2022	220	103	2.14
 total_patients	total_encounters	total_procedures	average_patient_age	average_claim_cost	total_claim_amount	patients_with_death_date
-400	7794	13839	44.7	1802.22	14046530.87	39
+974	27891	47701	68.6	3639.68	101514375.52	154

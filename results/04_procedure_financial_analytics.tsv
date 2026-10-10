@@ -1,95 +1,111 @@
 procedure_description	procedure_count	average_base_cost	total_base_cost	unique_patients
-Colonoscopy	1230	2079.63	2557939.87	319
-Electrocardiogram	1214	179.88	218379.54	326
-Physical therapy	1185	259.99	308092.97	324
-Appendectomy	1177	8666.60	10200588.36	314
-Blood transfusion	1168	960.00	1121284.62	314
-Wound care	1157	339.37	392648.87	310
-Intravenous fluid	1146	208.49	238934.76	304
-Depression screening	1145	94.63	108348.52	320
-Influenza vaccination	1130	84.88	95910.74	304
-Suture laceration	1100	432.30	475532.27	300
-Chest X-ray	1099	325.29	357489.93	317
-Renal dialysis	1088	1210.10	1316593.08	315
+Assessment of health and social care needs (procedure)	4596	431.00	1980876.00	509
+Hospice care (regime/therapy)	4098	431.00	1766238.00	61
+Depression screening using Patient Health Questionnaire Two-Item score (procedure)	3614	431.00	1557634.00	500
+Depression screening (procedure)	3614	431.00	1557634.00	500
+Assessment of substance use (procedure)	2906	431.00	1252486.00	436
+Renal dialysis (procedure)	2746	1004.09	2757221.00	5
+Assessment using Morse Fall Scale (procedure)	2422	431.00	1043882.00	268
+Assessment of anxiety (procedure)	2288	431.00	986128.00	437
+Medication Reconciliation (procedure)	2284	509.12	1162840.00	418
+Screening for drug abuse (procedure)	1484	431.00	639604.00	333
+Screening for domestic abuse (procedure)	1432	431.00	617192.00	356
+Assessment using Alcohol Use Disorders Identification Test - Consumption (procedure)	1422	431.00	612882.00	331
+Electrical cardioversion	1383	25903.11	35824002.00	74
+Auscultation of the fetal heart	1065	5312.51	5657822.00	71
+Evaluation of uterine fundal height	1065	5287.59	5631281.00	71
 procedure_description	procedure_count	average_base_cost	maximum_base_cost	total_base_cost
-Appendectomy	1177	8666.60	14151.46	10200588.36
-Colonoscopy	1230	2079.63	3562.24	2557939.87
-Renal dialysis	1088	1210.10	2049.94	1316593.08
-Blood transfusion	1168	960.00	1633.34	1121284.62
-Suture laceration	1100	432.30	730.90	475532.27
-Wound care	1157	339.37	586.41	392648.87
-Chest X-ray	1099	325.29	596.64	357489.93
-Physical therapy	1185	259.99	478.79	308092.97
-Intravenous fluid	1146	208.49	357.67	238934.76
-Electrocardiogram	1214	179.88	341.35	218379.54
-Depression screening	1145	94.63	159.39	108348.52
-Influenza vaccination	1130	84.88	148.80	95910.74
+Admit to ICU (procedure)	5	206260.40	289531.00	1031302.00
+Coronary artery bypass grafting	9	47085.89	67168.00	423773.00
+Lumpectomy of breast (procedure)	5	29353.00	31539.00	146765.00
+Hemodialysis (procedure)	27	29299.56	37213.00	791088.00
+Insertion of biventricular implantable cardioverter defibrillator	4	27201.00	38711.00	108804.00
+Electrical cardioversion	1383	25903.11	44532.00	35824002.00
+Partial resection of colon	7	25229.29	38749.00	176605.00
+Percutaneous mechanical thrombectomy of portal vein using fluoroscopic guidance	57	20228.04	34733.00	1152998.00
+Percutaneous coronary intervention	9	19728.00	32927.00	177552.00
+Appendectomy	2	17091.00	18357.00	34182.00
+Surgical manipulation of joint of knee	12	16320.08	22000.00	195841.00
+Vasectomy	5	12106.20	16476.00	60531.00
+Colonoscopy	424	11841.99	19693.00	5021003.00
+Subcutaneous immunotherapy	54	11835.50	19620.00	639117.00
+Combined chemotherapy and radiation therapy (procedure)	444	11796.39	19864.00	5237596.00
 cost_range	procedure_count	percentage
-< $100	1622	11.72
-$100-$499	7284	52.63
-$500-$999	1177	8.50
-$1,000-$4,999	2609	18.85
-$5,000-$9,999	860	6.21
-$10,000+	287	2.07
+< $100	415	0.87
+$100-$499	32656	68.46
+$500-$999	2858	5.99
+$1,000-$4,999	6289	13.18
+$5,000-$9,999	2756	5.78
+$10,000+	2727	5.72
 patient_id	procedure_count	total_procedure_base_cost	average_procedure_base_cost
-02e0f81e-08d6-44fc-92a3-231885fd5560	183	212293.39	1160.07
-52e974df-1b26-4711-bd7d-a5c98cda93b0	170	238733.00	1404.31
-bc95bdd7-dad1-4590-ab0a-ec6286d0a34c	169	248553.57	1470.73
-8e3c62bf-bc9e-4acd-b60f-fe09c936d60a	161	204966.30	1273.08
-4bf32f9e-5569-4fd9-951b-7d7983881273	161	250652.54	1556.85
-a9fe494e-304c-4b39-b6ab-eff0cd1d19da	155	166256.88	1072.63
-0a8e1a0a-4d6a-4c85-be4a-9853576f6394	154	188008.40	1220.83
-3fcb7678-f20e-48c1-aa25-eba2be74ff4e	153	186323.84	1217.80
-55cc5c7c-28cc-42f8-9824-4984a65d60e4	150	180147.47	1200.98
-dad40f0a-b801-48f2-9b73-1cd196a7530e	142	164502.23	1158.47
-0faea29a-04a5-464c-bd7f-c8e64086d68b	140	191416.90	1367.26
-4252cfa1-386c-490a-a448-400a00feef23	138	173937.99	1260.42
-14088f65-7284-473d-9cbe-74b1e878d8c0	137	231747.78	1691.59
-e72fa7e9-e30c-40fd-8349-c174ab0be280	135	176011.47	1303.79
-3a03ce9e-1c91-4142-b88d-7439a9e02b64	130	175797.01	1352.28
+1712d26d-822d-1e3a-2267-0a9dba31d7c8	1783	2489508.00	1396.25
+5e055638-0dad-dfd5-005d-1e74b6fd29ac	1243	952827.00	766.55
+3de74169-7f67-9304-91d4-757e0f3a14d2	1170	982392.00	839.65
+ff331e5c-ab16-e218-f39a-63e11de1ed75	828	6522854.00	7877.84
+3f523789-55f3-bb31-2757-4803ca6a9c2a	759	9942253.00	13099.15
+1375a6a6-5638-8af1-dc4f-2aa58220d36d	602	1149411.00	1909.32
+b4ab9ab3-f52a-751e-a990-3bd5654d5870	540	270195.00	500.36
+0226f105-2572-1c6f-15f0-1aa0438e40d0	526	1261598.00	2398.48
+3b46a0b7-0f34-9b9a-c319-ace4a1f58c0b	498	217046.00	435.84
+36412d54-5a49-0dc6-5bab-3749c92f79d9	497	216849.00	436.32
+442dc617-c7f2-0513-15cd-c35c4efdba73	493	256834.00	520.96
+9b8ae606-5059-b3a6-19c7-c812901898bb	485	284983.00	587.59
+a31f5105-476f-b129-fb9a-514cf45a34ac	471	211962.00	450.03
+b0c95bfd-adc4-8910-a75d-e208879c975d	460	728262.00	1583.18
+0c5abaaf-01be-55ac-a808-3afc6407fe0b	444	191861.00	432.12
 procedure_range	patient_count
-1	2
-2-5	22
-6-10	63
-11-20	90
-21+	220
+1	65
+2-5	96
+6-10	96
+11-20	140
+21+	396
 quarter_number	procedure_count	unique_patients	average_base_cost	total_base_cost
-1	3460	330	1199.17	4149138.47
-2	3565	341	1302.75	4644319.73
-3	3340	323	1283.33	4286332.93
-4	3474	327	1241.21	4311952.40
+1	12596	531	2147.71	27052527.00
+2	11792	494	2237.51	26384695.00
+3	11173	483	2299.33	25690407.00
+4	12140	465	2173.81	26390082.00
 year	procedure_count	unique_patients	average_base_cost	total_base_cost
-2011	988	117	1119.37	1105934.74
-2012	2271	244	1194.65	2713061.02
-2013	3124	271	1285.32	4015341.76
-2014	2017	178	1255.74	2532832.79
-2015	1505	131	1233.21	1855981.42
-2016	1043	94	1223.45	1276055.66
-2017	693	62	1325.47	918549.16
-2018	648	46	1241.95	804786.25
-2019	576	44	1357.90	782151.37
-2020	428	34	1449.62	620435.39
-2021	299	26	1481.56	442985.09
-2022	247	19	1310.24	323628.88
+2011	1184	82	2328.35	2756770.00
+2012	4456	362	2116.50	9431106.00
+2013	4998	393	2172.77	10859501.00
+2014	6292	448	1992.70	12538073.00
+2015	4656	371	2275.28	10593719.00
+2016	4143	383	2133.90	8840739.00
+2017	4585	387	2224.00	10197041.00
+2018	3880	363	2365.78	9179212.00
+2019	4378	357	2201.69	9639011.00
+2020	4451	360	2528.72	11255330.00
+2021	4410	341	2156.90	9511924.00
+2022	268	62	2668.97	715285.00
 procedure_reason	procedure_count	unique_patients	average_base_cost	total_base_cost
-Anemia	1777	351	1245.59	2213417.44
-Normal pregnancy	1760	342	1207.97	2126030.53
-Fracture of forearm	1758	351	1261.77	2218196.02
-Diabetes mellitus	1745	345	1370.95	2392299.96
-Hypertension	1713	349	1253.26	2146827.95
-Chronic pain	1709	333	1225.87	2095008.04
-Sinusitis	1700	350	1257.35	2137503.12
-Acute bronchitis	1677	345	1229.85	2062460.47
+Not documented	36945	732	804.62	29726560.00
+Normal pregnancy	5718	92	3526.82	20166362.00
+Atrial Fibrillation	1744	78	22476.83	39199597.00
+Malignant neoplasm of breast (disorder)	762	28	1912.57	1457379.00
+Non-small cell carcinoma of lung  TNM stage 1 (disorder)	343	10	11813.85	4052150.00
+Hypoxemia (disorder)	342	17	431.00	147402.00
+Acute bronchitis (disorder)	249	207	2352.49	585769.00
+Pulmonary emphysema (disorder)	210	10	5187.81	1089441.00
+Chronic obstructive bronchitis (disorder)	170	13	5092.90	865793.00
+Stroke	114	55	10593.50	1207659.00
+Chronic congestive heart failure (disorder)	103	23	893.50	92031.00
+Polyp of colon	100	49	8305.94	830594.00
+Fracture of forearm	84	48	3895.42	327215.00
+Acute viral pharyngitis (disorder)	59	57	1874.08	110571.00
+Streptococcal sore throat (disorder)	56	55	1956.61	109570.00
 procedure_description	procedure_count	total_base_cost	share_of_total_procedure_cost_pct
-Appendectomy	1177	10200588.36	58.65
-Colonoscopy	1230	2557939.87	14.71
-Renal dialysis	1088	1316593.08	7.57
-Blood transfusion	1168	1121284.62	6.45
-Suture laceration	1100	475532.27	2.73
-Wound care	1157	392648.87	2.26
-Chest X-ray	1099	357489.93	2.06
-Physical therapy	1185	308092.97	1.77
-Intravenous fluid	1146	238934.76	1.37
-Electrocardiogram	1214	218379.54	1.26
-Depression screening	1145	108348.52	0.62
-Influenza vaccination	1130	95910.74	0.55
+Electrical cardioversion	1383	35824002.00	33.95
+Auscultation of the fetal heart	1065	5657822.00	5.36
+Evaluation of uterine fundal height	1065	5631281.00	5.34
+Combined chemotherapy and radiation therapy (procedure)	444	5237596.00	4.96
+Colonoscopy	424	5021003.00	4.76
+Catheter ablation of tissue of heart	365	3405999.00	3.23
+Renal dialysis (procedure)	2746	2757221.00	2.61
+Assessment of health and social care needs (procedure)	4596	1980876.00	1.88
+Bone density scan (procedure)	198	1901367.00	1.80
+Hospice care (regime/therapy)	4098	1766238.00	1.67
+Ultrasound scan for fetal viability	184	1693824.00	1.61
+Spirometry (procedure)	209	1628688.00	1.54
+Depression screening (procedure)	3614	1557634.00	1.48
+Depression screening using Patient Health Questionnaire Two-Item score (procedure)	3614	1557634.00	1.48
+Cognitive and behavioral therapy (regime/therapy)	136	1412779.00	1.34

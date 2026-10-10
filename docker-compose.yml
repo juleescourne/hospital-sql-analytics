@@ -1,5 +1,5 @@
-# Base locale de démonstration. Lancer : bash scripts/run_demo.sh
-# Le script génère les fichiers avant le montage et attend le serveur final.
+# Base locale du jeu public Maven. Lancer : bash scripts/run_demo.sh
+# Le script prépare les CSV Maven avant le montage et attend le serveur final.
 
 services:
   mysql:
@@ -12,7 +12,7 @@ services:
     ports:
       - "3306:3306"
     command:
-      # local_infile est requis par db/load_sample_data.sql, et desactive par defaut.
+      # local_infile est requis par db/load_maven.sql, et desactive par defaut.
       - --local-infile=1
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_0900_ai_ci

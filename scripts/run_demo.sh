@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# Rebuild the dedicated synthetic demo database and export all query results.
+# Rebuild the dedicated Maven analysis database and export all query results.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 python3 -m unittest discover -s tests -v
-python3 scripts/generate_sample_data.py
+python3 scripts/prepare_maven.py
 if [[ "${1:-}" == "--local" ]]; then
   client=("${MYSQL_BIN:-mysql}" --local-infile=1 --batch --raw -u "${MYSQL_USER:-root}")
   if [[ -n "${MYSQL_SOCKET:-}" ]]; then
@@ -13,13 +13,20 @@ if [[ "${1:-}" == "--local" ]]; then
   fi
 else
   docker compose up -d --wait
+  # LOAD DATA paths are generated on the host; use a loader with container paths.
+  sed "s|$PWD/data/prepared/|/data/prepared/|g" db/load_maven.sql > db/load_maven_container.sql
   client=(docker compose exec -T -w / mysql mysql --local-infile=1 --batch --raw -uroot -phospital)
 fi
-# This database is reserved for generated data. No external database is targeted.
+# This dedicated database is recreated from the archived public source.
 "${client[@]}" -e 'DROP DATABASE IF EXISTS hospital_analytics;'
 "${client[@]}" < db/schema.sql
-"${client[@]}" hospital_analytics < db/load_sample_data.sql
 python3 scripts/check_sql.py "${client[@]}" hospital_analytics
+if [[ "${1:-}" == "--local" ]]; then
+  "${client[@]}" hospital_analytics < db/load_maven.sql
+else
+  "${client[@]}" hospital_analytics < db/load_maven_container.sql
+fi
+python3 scripts/check_source_import.py "${client[@]}" hospital_analytics
 "${client[@]}" hospital_analytics -e 'ANALYZE TABLE encounters;' > /dev/null
 mkdir -p results
 "${client[@]}" hospital_analytics -e 'SELECT VERSION() AS mysql_version;' > results/environment.tsv
